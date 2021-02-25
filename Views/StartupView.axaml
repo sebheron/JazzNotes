@@ -1,0 +1,84 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="200"
+             x:Class="JazzNotes.Views.StartupView">
+  <Grid RowDefinitions="30, *" ColumnDefinitions="50, *">
+    <Button Margin="3 0 0 0" Content="New" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Command="{Binding $parent[Window].DataContext.NewTranscription}" />
+    <TextBox Margin="5" Text="{Binding Search}" Grid.Column="1" />
+    <TabControl Grid.ColumnSpan="3" Grid.Row="1">
+      <TabItem Header="Notes">
+        <Grid RowDefinitions="*, 40">
+          <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Orientation="Vertical">
+              <ItemsControl Items="{Binding NoteItems}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <Button Command="{Binding $parent[Window].DataContext.OpenNote}" CommandParameter="{Binding}"
+                            Margin="3" Padding="5" HorizontalAlignment="Stretch">
+                      <Grid RowDefinitions="*, *" ColumnDefinitions="*, *">
+                        <TextBlock Text="{Binding Text}" TextWrapping="Wrap" />
+                        <TextBlock Foreground="#555" Margin="0 5 0 0" Grid.Row="1" Text="{Binding Transcription.Name}" TextWrapping="Wrap" />
+                        <ItemsControl Grid.RowSpan="2" Grid.Column="1" Items="{Binding Tags}" HorizontalAlignment="Right">
+                          <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                              <Border Margin="3" Padding="3" CornerRadius="5" Background="{Binding Color}">
+                                <Label HorizontalAlignment="Left" Content="{Binding Name}" />
+                              </Border>
+                            </DataTemplate>
+                          </ItemsControl.ItemTemplate>
+                          <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                              <WrapPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                            </ItemsPanelTemplate>
+                          </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                      </Grid>
+                    </Button>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </StackPanel>
+          </ScrollViewer>
+          <Label Margin="3" Content="{Binding NotesCount}" Grid.Row="1" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" />
+        </Grid>
+      </TabItem>
+      <TabItem Header="Transcriptions">
+        <Grid RowDefinitions="*, 40">
+          <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Orientation="Vertical">
+              <ItemsControl Items="{Binding TranscriptionItems}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <Button Command="{Binding $parent[Window].DataContext.OpenTranscription}" CommandParameter="{Binding}"
+                            Margin="3" Padding="5" HorizontalAlignment="Stretch">
+                      <Grid ColumnDefinitions="*, *">
+                        <TextBlock Text="{Binding Name}" TextWrapping="Wrap" />
+                        <ItemsControl Grid.Column="1" Items="{Binding Tags}" HorizontalAlignment="Right">
+                          <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                              <Border Margin="3" Padding="3" CornerRadius="5" Background="{Binding Color}">
+                                <Label HorizontalAlignment="Left" Content="{Binding Name}" />
+                              </Border>
+                            </DataTemplate>
+                          </ItemsControl.ItemTemplate>
+                          <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                              <WrapPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                            </ItemsPanelTemplate>
+                          </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                      </Grid>
+                    </Button>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </StackPanel>
+          </ScrollViewer>
+          <Label Margin="3" Content="{Binding TranscriptionsCount}" Grid.Row="1" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" />
+        </Grid>
+      </TabItem>
+    </TabControl>
+  </Grid>
+</UserControl>

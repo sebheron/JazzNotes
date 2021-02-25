@@ -1,0 +1,39 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://scElementLoadedhemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:mupdf="using:MuPDFCore.MuPDFRenderer"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="800"
+             x:Class="JazzNotes.Views.TranscriptionView">
+  <UserControl.Styles>
+    <Style Selector="Border.hover:pointerover">
+      <Setter Property="BorderThickness" Value="2" />
+      <Setter Property="Opacity" Value="0.8" />
+    </Style>
+  </UserControl.Styles>
+  <Grid RowDefinitions="30, *">
+    <ToggleButton Content="Show Notes" Name="ShowNotes" IsChecked="{Binding ShowNotes}" />
+    <ScrollViewer Name="ScrollViewer" Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+      <Grid Name="PointGrid" Width="{Binding GridWidth}" PointerPressed="OnImagePressed" PointerReleased="OnImageReleased" PointerMoved="OnImageMoved" Background="White">
+        <Image Name="Image" Source="{Binding Image}" Margin="{Binding Margin}" MaxWidth="800" HorizontalAlignment="Center" VerticalAlignment="Top" IsHitTestVisible="False" Stretch="None" />
+        <ItemsControl IsVisible="{Binding IsChecked, ElementName=ShowNotes}" Items="{Binding NoteVMs}" Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Border Classes="hover" Opacity="0.3" HorizontalAlignment="Left" VerticalAlignment="Top" Background="{Binding Color}" BorderBrush="{Binding Color}"
+                    Margin="{Binding Margin}" Width="{Binding Width}" Height="{Binding Height}">
+                <Button ClickMode="Press" Opacity="0.05" Command="{Binding $parent[UserControl].DataContext.EditNote}" CommandParameter="{Binding}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <Grid Background="Transparent" />
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+        </ItemsControl>
+        <Rectangle Name="Cover" Fill="#5F8B8B8B" IsHitTestVisible="False" Width="50" Height="50"
+                   HorizontalAlignment="Left" VerticalAlignment="Top" IsVisible="False"/>
+      </Grid>
+    </ScrollViewer>
+  </Grid>
+</UserControl>
