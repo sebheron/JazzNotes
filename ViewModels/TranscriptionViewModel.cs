@@ -55,7 +55,7 @@ namespace JazzNotes.ViewModels
         /// <summary>
         /// The screen width.
         /// </summary>
-        public double GridWidth => ((IClassicDesktopStyleApplicationLifetime)Application.Current.ApplicationLifetime).MainWindow.Screens.Primary.WorkingArea.Width;
+        public double GridWidth => WindowHelper.MainWindow.Screens.Primary.WorkingArea.Width;
 
         /// <summary>
         /// The notes viewmodels.

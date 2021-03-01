@@ -15,14 +15,26 @@ using System.Threading.Tasks;
 
 namespace JazzNotes.Helpers
 {
-    public class PdfHelper : IDisposable
+    public class PdfHelper
     {
-        private Window window;
-
+        /// <summary>
+        /// Directory for GhostScript.
+        /// </summary>
         private readonly string GhostscriptDirectoryWindows = Path.Combine(System.AppContext.BaseDirectory, "Ghostscript");
 
+        /// <summary>
+        /// Directory for Transcriptions.
+        /// </summary>
+        private readonly string TranscriptionsDirectory = Path.Combine(System.AppContext.BaseDirectory, "Transcriptions");
+
+        /// <summary>
+        /// Paths for images created temporarily.
+        /// </summary>
         private readonly string imgPath = System.IO.Directory.GetCurrentDirectory() + "/temp{0}.jpg";
 
+        /// <summary>
+        /// All of the current paths.
+        /// </summary>
         private readonly List<string> imgPaths;
 
         public PdfHelper()
@@ -31,8 +43,8 @@ namespace JazzNotes.Helpers
             {
                 MagickNET.SetGhostscriptDirectory(GhostscriptDirectoryWindows);
             }
-            this.window = ((IClassicDesktopStyleApplicationLifetime)Application.Current.ApplicationLifetime).MainWindow;
             this.imgPaths = new List<string>();
+            Directory.CreateDirectory(TranscriptionsDirectory);
         }
 
         public async Task<string> ShowDialog()
@@ -41,32 +53,29 @@ namespace JazzNotes.Helpers
             myDialog.Filters.Add(new FileDialogFilter() { Name = "PDF files (*.PDF)", Extensions = new List<string> { "pdf" } });
             myDialog.AllowMultiple = false;
 
-            var result = await myDialog.ShowAsync(this.window);
+            var result = await myDialog.ShowAsync(WindowHelper.MainWindow);
 
             return result[0];
         }
 
         public void LoadPDF(string path)
         {
-            using var collection = new MagickImageCollection();
-            using var stream = new MemoryStream();
+            var title = Path.GetFileNameWithoutExtension(path);
+            var newPath = Path.Combine(TranscriptionsDirectory, title);
 
-            if (!File.Exists(path))
+            if (File.Exists(newPath))
             {
-                var messageBoxStandardWindow = MessageBoxManager
-                    .GetMessageBoxStandardWindow("JazzNotes", "PDF file is missing and cannot be loaded.");
-                messageBoxStandardWindow.Show();
-                this.Image = null;
+                this.LoadImage(newPath);
+                return;
             }
+
+            using var collection = new MagickImageCollection();
 
             collection.Read(path);
 
             using (IMagickImage vertical = collection.AppendVertically())
             {
                 vertical.Format = MagickFormat.Png;
-
-                var newPath = string.Format(this.imgPath, imgPaths.Count + 1);
-                imgPaths.Add(newPath);
 
                 this.Height = vertical.Height;
                 this.Width = vertical.Width;
@@ -78,11 +87,30 @@ namespace JazzNotes.Helpers
             }
         }
 
+        public void LoadImage(string path)
+        {
+            if (File.Exists(path))
+            {
+                this.FilePath = path;
+                this.Image = new Bitmap(path);
+                this.Height = this.Image.Size.Height;
+                this.Width = this.Image.Size.Width;
+            }
+            else
+            {
+                var messageBoxStandardWindow = MessageBoxManager
+                    .GetMessageBoxStandardWindow("JazzNotes", "Image file is missing and cannot be loaded.");
+                messageBoxStandardWindow.Show();
+                this.Image = null;
+                return;
+            }
+        }
+
         public Bitmap GetSnip(Rect draw)
         {
             var image = new MagickImage();
 
-            image.Read(this.imgPaths[0]);
+            image.Read(this.FilePath);
             image.Crop(new MagickGeometry((int)draw.Left, (int)draw.Top, (int)draw.Width, (int)draw.Height), Gravity.Northwest);
 
             image.Format = MagickFormat.Png;
@@ -95,26 +123,14 @@ namespace JazzNotes.Helpers
             return new Bitmap(newPath);
         }
 
-        public void Dispose()
-        {
-            this.Clean();
-        }
-
         public void Clean()
         {
             this.Image = null;
             imgPaths.Clear();
-            var paths = Directory.GetFiles(Directory.GetCurrentDirectory()).Where(x => x.EndsWith(".png"));
-            try
+            var paths = Directory.GetFiles(Directory.GetCurrentDirectory()).Where(x => Path.GetFileName(x).Contains("temp") && x.EndsWith(".png"));
+            foreach (var path in paths)
             {
-                foreach (var path in paths)
-                {
-                    File.Delete(path);
-                }
-            }
-            catch
-            {
-                Debug.WriteLine("Error deleting file, may be in use");
+                File.Delete(path);
             }
         }
 

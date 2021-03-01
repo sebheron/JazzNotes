@@ -15,27 +15,32 @@
               <ItemsControl Items="{Binding NoteItems}">
                 <ItemsControl.ItemTemplate>
                   <DataTemplate>
-                    <Button Command="{Binding $parent[Window].DataContext.OpenNote}" CommandParameter="{Binding}"
-                            Margin="3" Padding="5" HorizontalAlignment="Stretch">
-                      <Grid RowDefinitions="*, *" ColumnDefinitions="*, *">
-                        <TextBlock Text="{Binding Text}" TextWrapping="Wrap" />
-                        <TextBlock Foreground="#555" Margin="0 5 0 0" Grid.Row="1" Text="{Binding Transcription.Name}" TextWrapping="Wrap" />
-                        <ItemsControl Grid.RowSpan="2" Grid.Column="1" Items="{Binding Tags}" HorizontalAlignment="Right">
-                          <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                              <Border Margin="3" Padding="3" CornerRadius="5" Background="{Binding Color}">
-                                <Label HorizontalAlignment="Left" Content="{Binding Name}" />
-                              </Border>
-                            </DataTemplate>
-                          </ItemsControl.ItemTemplate>
-                          <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                              <WrapPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-                            </ItemsPanelTemplate>
-                          </ItemsControl.ItemsPanel>
-                        </ItemsControl>
-                      </Grid>
-                    </Button>
+                    <Grid ColumnDefinitions="*, 40">
+                      <Button Command="{Binding $parent[Window].DataContext.OpenNote}" CommandParameter="{Binding}"
+                              Margin="3" Padding="5" HorizontalAlignment="Stretch">
+                        <Grid RowDefinitions="*, *" ColumnDefinitions="*, *">
+                          <TextBlock Text="{Binding Text}" TextWrapping="Wrap" />
+                          <TextBlock Foreground="#555" Margin="0 5 0 0" Grid.Row="1" Text="{Binding Transcription.Name}" TextWrapping="Wrap" />
+                          <ItemsControl Grid.RowSpan="2" Grid.Column="1" Items="{Binding Tags}" HorizontalAlignment="Right">
+                            <ItemsControl.ItemTemplate>
+                              <DataTemplate>
+                                <Border Margin="3" Padding="3" CornerRadius="5" Background="{Binding Color}">
+                                  <Label HorizontalAlignment="Left" Content="{Binding Name}" />
+                                </Border>
+                              </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                            <ItemsControl.ItemsPanel>
+                              <ItemsPanelTemplate>
+                                <WrapPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                              </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                          </ItemsControl>
+                        </Grid>
+                      </Button>
+                      <Button Command="{Binding $parent[Window].DataContext.DeleteNote}" CommandParameter="{Binding}"
+                              Grid.Column="2" Margin="3" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                              HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Opacity="0.4" Content="X"/>
+                    </Grid>
                   </DataTemplate>
                 </ItemsControl.ItemTemplate>
               </ItemsControl>
@@ -51,26 +56,31 @@
               <ItemsControl Items="{Binding TranscriptionItems}">
                 <ItemsControl.ItemTemplate>
                   <DataTemplate>
-                    <Button Command="{Binding $parent[Window].DataContext.OpenTranscription}" CommandParameter="{Binding}"
-                            Margin="3" Padding="5" HorizontalAlignment="Stretch">
-                      <Grid ColumnDefinitions="*, *">
-                        <TextBlock Text="{Binding Name}" TextWrapping="Wrap" />
-                        <ItemsControl Grid.Column="1" Items="{Binding Tags}" HorizontalAlignment="Right">
-                          <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                              <Border Margin="3" Padding="3" CornerRadius="5" Background="{Binding Color}">
-                                <Label HorizontalAlignment="Left" Content="{Binding Name}" />
-                              </Border>
-                            </DataTemplate>
-                          </ItemsControl.ItemTemplate>
-                          <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                              <WrapPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-                            </ItemsPanelTemplate>
-                          </ItemsControl.ItemsPanel>
-                        </ItemsControl>
-                      </Grid>
-                    </Button>
+                    <Grid ColumnDefinitions="*, 40">
+                      <Button Command="{Binding $parent[Window].DataContext.OpenTranscription}" CommandParameter="{Binding}"
+                              Margin="3" Padding="5" HorizontalAlignment="Stretch">
+                        <Grid ColumnDefinitions="*, *">
+                          <TextBlock Text="{Binding Name}" TextWrapping="Wrap" />
+                          <ItemsControl Grid.Column="1" Items="{Binding Tags}" HorizontalAlignment="Right">
+                            <ItemsControl.ItemTemplate>
+                              <DataTemplate>
+                                <Border Margin="3" Padding="3" CornerRadius="5" Background="{Binding Color}">
+                                  <Label HorizontalAlignment="Left" Content="{Binding Name}" />
+                                </Border>
+                              </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                            <ItemsControl.ItemsPanel>
+                              <ItemsPanelTemplate>
+                                <WrapPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                              </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                          </ItemsControl>
+                        </Grid>
+                      </Button>
+                      <Button Command="{Binding $parent[Window].DataContext.DeleteTranscription}" CommandParameter="{Binding}"
+                              Grid.Column="2" Margin="3" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                              HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Opacity="0.4" Content="X"/>
+                    </Grid>
                   </DataTemplate>
                 </ItemsControl.ItemTemplate>
               </ItemsControl>

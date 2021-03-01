@@ -94,11 +94,19 @@ namespace JazzNotes.ViewModels
             set
             {
                 this.RaiseAndSetIfChanged(ref this.search, value);
-                this.RaisePropertyChanged(nameof(this.NoteItems));
-                this.RaisePropertyChanged(nameof(this.NotesCount));
-                this.RaisePropertyChanged(nameof(this.TranscriptionItems));
-                this.RaisePropertyChanged(nameof(this.TranscriptionsCount));
+                this.RaiseListChanged();
             }
+        }
+
+        /// <summary>
+        /// Raises that the lists have been changed.
+        /// </summary>
+        public void RaiseListChanged()
+        {
+            this.RaisePropertyChanged(nameof(this.NoteItems));
+            this.RaisePropertyChanged(nameof(this.NotesCount));
+            this.RaisePropertyChanged(nameof(this.TranscriptionItems));
+            this.RaisePropertyChanged(nameof(this.TranscriptionsCount));
         }
 
         /// <summary>

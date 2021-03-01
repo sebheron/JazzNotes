@@ -3,9 +3,12 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using JazzNotes.Helpers;
 using JazzNotes.Models;
+using MessageBox.Avalonia;
+using MessageBox.Avalonia.Enums;
 using ReactiveUI;
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 
 namespace JazzNotes.ViewModels
@@ -64,6 +67,42 @@ namespace JazzNotes.ViewModels
         }
 
         /// <summary>
+        /// Deletes a note.
+        /// </summary>
+        /// <param name="note">The note to delete.</param>
+        public async void DeleteNote(Note note)
+        {
+            var name = note.Text.Length > 20 ? note.Text.Substring(0, 20) : note.Text;
+            var messageBoxStandardWindow = MessageBoxManager
+                    .GetMessageBoxStandardWindow("JazzNotes", $"Are you sure you want to delete the note: {name}?", ButtonEnum.YesNo);
+            var delete = await messageBoxStandardWindow.ShowDialog(WindowHelper.MainWindow);
+
+            if (delete == ButtonResult.Yes)
+            {
+                var transcription = this.Linker.Transcriptions.Where(x => x.Notes.Contains(note)).First();
+                transcription.Notes.Remove(note);
+                this.StartupVM.RaiseListChanged();
+            }
+        }
+
+        /// <summary>
+        /// Open a transcription.
+        /// </summary>
+        /// <param name="transcription">The transcription to delete.</param>
+        public async void DeleteTranscription(Transcription transcription)
+        {
+            var messageBoxStandardWindow = MessageBoxManager
+                    .GetMessageBoxStandardWindow("JazzNotes", $"Are you sure you want to delete the transcription: {transcription.Name}?", ButtonEnum.YesNo);
+            var delete = await messageBoxStandardWindow.ShowDialog(WindowHelper.MainWindow);
+
+            if (delete == ButtonResult.Yes)
+            {
+                this.Linker.Transcriptions.Remove(transcription);
+                this.StartupVM.RaiseListChanged();
+            }
+        }
+
+        /// <summary>
         /// The current displayed viewmodel.
         /// </summary>
         public ViewModelBase Content
@@ -83,6 +122,7 @@ namespace JazzNotes.ViewModels
 
                 var transcription = this.Linker.GetOrAddTranscription(value);
                 this.pdfHelper.Clean();
+
                 this.pdfHelper.LoadPDF(value);
 
                 if (this.pdfHelper.Image != null)
