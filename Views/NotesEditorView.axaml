@@ -4,37 +4,38 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="JazzNotes.Views.NotesEditorView">
-  <ScrollViewer HorizontalScrollBarVisibility="Disabled">
-    <DockPanel>
-      <Border DockPanel.Dock="Top" Margin="5" BorderBrush="Gray" BorderThickness="1" HorizontalAlignment="Stretch">
-        <Image Source="{Binding Image}" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-      </Border>
-      <Label Margin="5" DockPanel.Dock="Top" Content="{Binding TranscriptionName}" />
-      <TextBox DockPanel.Dock="Top" Watermark="Note" Margin="5" AcceptsReturn="True" TextWrapping="Wrap" Text="{Binding Text}" />
-      <StackPanel DockPanel.Dock="Bottom" VerticalAlignment="Bottom" Orientation="Vertical">
-        <ItemsControl Items="{Binding Tags}">
-          <ItemsControl.ItemTemplate>
-            <DataTemplate>
-              <Border Margin="3" Padding="3">
-                <Button Command="{Binding $parent[UserControl].DataContext.RemoveTag}" CommandParameter="{Binding}"
-                        Content="{Binding Name}" Background="{Binding Color}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-              </Border>
-            </DataTemplate>
-          </ItemsControl.ItemTemplate>
-          <ItemsControl.ItemsPanel>
-            <ItemsPanelTemplate>
-              <WrapPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-            </ItemsPanelTemplate>
-          </ItemsControl.ItemsPanel>
-        </ItemsControl>
-        <TextBox Watermark="Add Tag" Name="TagsTextBox" Margin="5" HorizontalAlignment="Stretch" AcceptsReturn="False" TextWrapping="Wrap" />
-        <Border VerticalAlignment="Bottom" Padding="5" BorderThickness="0 1 0 0" BorderBrush="Gray">
-          <Grid ColumnDefinitions="100, *, 100">
-            <Button Content="Apply" />
-            <Button Grid.Column="2" Content="Delete" HorizontalAlignment="Right" />
-          </Grid>
+  <Grid RowDefinitions="40, *">
+    <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="5" BorderThickness="0 0 0 1" BorderBrush="Gray">
+      <Grid ColumnDefinitions="100, *">
+        <Button Content="Back" Command="{Binding $parent[Window].DataContext.GoBackToTranscription}" />
+      </Grid>
+    </Border>
+    <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Disabled">
+      <DockPanel>
+        <Border DockPanel.Dock="Top" Margin="5" BorderBrush="Gray" BorderThickness="1" HorizontalAlignment="Stretch">
+          <Image Source="{Binding Image}" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
         </Border>
-      </StackPanel>
-    </DockPanel>
-  </ScrollViewer>
+        <Label Margin="5" DockPanel.Dock="Top" Content="{Binding TranscriptionName}" />
+        <TextBox DockPanel.Dock="Top" Watermark="Note" Margin="5" AcceptsReturn="True" TextWrapping="Wrap" Text="{Binding Text}" />
+        <StackPanel DockPanel.Dock="Bottom" VerticalAlignment="Bottom" Orientation="Vertical">
+          <ItemsControl Items="{Binding Tags}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <Border Margin="3" Padding="3">
+                  <Button Command="{Binding $parent[UserControl].DataContext.RemoveTag}" CommandParameter="{Binding}"
+                          Content="{Binding Name}" Background="{Binding Color}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                </Border>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate>
+                <WrapPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+              </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+          </ItemsControl>
+          <TextBox Watermark="Add Tag" Name="TagsTextBox" Margin="5" HorizontalAlignment="Stretch" AcceptsReturn="False" TextWrapping="Wrap" />
+        </StackPanel>
+      </DockPanel>
+    </ScrollViewer>
+  </Grid>
 </UserControl>

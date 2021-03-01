@@ -103,6 +103,30 @@ namespace JazzNotes.ViewModels
         }
 
         /// <summary>
+        /// Go back to the transcription or if no transcription is open, go to startup.
+        /// </summary>
+        public void GoBackToTranscription()
+        {
+            if (this.TranscriptionVM != null)
+            {
+                this.Content = this.TranscriptionVM;
+            }
+            else
+            {
+                this.Content = this.StartupVM;
+            }
+        }
+
+        /// <summary>
+        /// Go back to the startup.
+        /// </summary>
+        public void GoBackToStartup()
+        {
+            this.Content = this.StartupVM;
+            this.TranscriptionVM = null;
+        }
+
+        /// <summary>
         /// The current displayed viewmodel.
         /// </summary>
         public ViewModelBase Content

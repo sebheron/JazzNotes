@@ -35,20 +35,12 @@ namespace JazzNotes.Views
             if (this.viewModel != null && this.viewModel.Content is TranscriptionViewModel)
             {
                 e.Cancel = true;
-                this.viewModel.Content = this.viewModel.StartupVM;
-                this.viewModel.TranscriptionVM = null;
+                this.viewModel.GoBackToStartup();
             }
             else if (this.viewModel != null && this.viewModel.Content is NotesEditorViewModel)
             {
                 e.Cancel = true;
-                if (this.viewModel.TranscriptionVM != null)
-                {
-                    this.viewModel.Content = this.viewModel.TranscriptionVM;
-                }
-                else
-                {
-                    this.viewModel.Content = this.viewModel.StartupVM;
-                }
+                this.viewModel.GoBackToTranscription();
             }
             else if (this.viewModel != null)
             {

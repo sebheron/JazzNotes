@@ -10,6 +10,8 @@ namespace JazzNotes.Views
 {
     public class TranscriptionView : UserControl
     {
+        private TranscriptionViewModel viewmodel;
+
         private ScrollViewer scrollViewer;
 
         private Image image;
@@ -32,9 +34,17 @@ namespace JazzNotes.Views
             this.cover = this.FindControl<Rectangle>("Cover");
             this.grid = this.FindControl<Grid>("PointGrid");
             this.image = this.FindControl<Image>("Image");
+            
             this.scrollViewer = this.FindControl<ScrollViewer>("ScrollViewer");
+        }
 
-            this.scrollViewer.Offset = new Vector(this.scrollViewer.Extent.Width / 2, 0);
+        protected override void OnDataContextChanged(EventArgs e)
+        {
+            if (this.viewmodel == null)
+            {
+                this.viewmodel = (TranscriptionViewModel)this.DataContext;
+            }
+            base.OnDataContextChanged(e);
         }
 
         private void OnImagePressed(object sender, PointerPressedEventArgs e)
@@ -42,7 +52,7 @@ namespace JazzNotes.Views
             var pointerPoint = e.GetCurrentPoint(this.image);
             if (pointerPoint.Properties.IsLeftButtonPressed
                 || !pointerPoint.Properties.IsRightButtonPressed
-                || !((TranscriptionViewModel)this.DataContext).ShowNotes) return;
+                || !this.viewmodel.ShowNotes) return;
             this.start = pointerPoint.Position;
             this.visualStart = e.GetPosition(this.grid);
             this.pressed = true;
@@ -54,14 +64,14 @@ namespace JazzNotes.Views
 
         private void OnImageReleased(object sender, PointerReleasedEventArgs e)
         {
-            if (this.pressed && this.cover.Width > 2 && this.cover.Height > 2 && this.DataContext is TranscriptionViewModel vm)
+            if (this.pressed && this.cover.Width > 2 && this.cover.Height > 2)
             {
                 this.pressed = false;
                 this.cover.IsVisible = false;
 
                 var currentPos = e.GetPosition(this.image);
                 var checkMargin = this.GetMargin(currentPos, this.start);
-                vm.AddNote(this.image.Bounds, new Rect(this.cover.Margin.Left, this.cover.Margin.Top, this.cover.Width, this.cover.Height),
+                this.viewmodel.AddNote(this.image.Bounds, new Rect(this.cover.Margin.Left, this.cover.Margin.Top, this.cover.Width, this.cover.Height),
                     new Rect(checkMargin.Left, checkMargin.Top, this.cover.Width, this.cover.Height));
             }
         }
