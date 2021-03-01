@@ -25,17 +25,17 @@ namespace JazzNotes.Views
 
         private void TagKeyUp(object? sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Space || e.Key == Key.Enter)
+            if (e.Key == Key.Enter)
             {
                 var added = ((NotesEditorViewModel)this.DataContext).AddTag(this.tagsTextBox.Text.Replace(" ", "").ToLower());
                 if (added)
                 {
                     this.tagsTextBox.Text = string.Empty;
                 }
-                else if (e.Key == Key.Space)
-                {
-                    this.tagsTextBox.Text = this.tagsTextBox.Text.Replace(" ", "-");
-                }
+            }
+            else if (e.Key == Key.Space)
+            {
+                this.tagsTextBox.Text = this.tagsTextBox.Text.Replace(" ", "-");
             }
         }
     }
