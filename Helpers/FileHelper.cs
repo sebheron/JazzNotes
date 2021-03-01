@@ -105,7 +105,9 @@ namespace JazzNotes.Helpers
                 var root = new XElement("link");
 
                 var tags = new XElement("tags");
-                foreach (var tag in linker.AllTags)
+                var usedTags = linker.GetUsedTags();
+
+                foreach (var tag in usedTags)
                 {
                     var ele = new XElement("tag");
                     ele.SetAttributeValue("name", tag.Name);

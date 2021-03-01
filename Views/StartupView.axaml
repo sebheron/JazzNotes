@@ -4,18 +4,22 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="200"
              x:Class="JazzNotes.Views.StartupView">
-  <Grid RowDefinitions="30, *" ColumnDefinitions="50, *">
-    <Button Margin="3 0 0 0" Content="New" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Command="{Binding $parent[Window].DataContext.NewTranscription}" />
-    <TextBox Margin="5" Text="{Binding Search}" Grid.Column="1" />
-    <TabControl Grid.ColumnSpan="3" Grid.Row="1">
+  <Grid RowDefinitions="Auto, *" ColumnDefinitions="*">
+    <Border BorderThickness="0 0 0 1" BorderBrush="Gray">
+      <Grid ColumnDefinitions="Auto, *">
+        <Button Margin="3 0 0 0" Content="New" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Command="{Binding $parent[Window].DataContext.NewTranscription}" />
+        <TextBox Margin="5" Text="{Binding Search}" Grid.Column="1" />
+      </Grid>
+    </Border>
+    <TabControl Grid.Row="1">
       <TabItem Header="Notes">
-        <Grid RowDefinitions="*, 40">
+        <Grid RowDefinitions="*, Auto">
           <ScrollViewer HorizontalScrollBarVisibility="Disabled">
             <StackPanel Orientation="Vertical">
               <ItemsControl Items="{Binding NoteItems}">
                 <ItemsControl.ItemTemplate>
                   <DataTemplate>
-                    <Grid ColumnDefinitions="*, 40">
+                    <Grid ColumnDefinitions="*, Auto">
                       <Button Command="{Binding $parent[Window].DataContext.OpenNote}" CommandParameter="{Binding}"
                               Margin="3" Padding="5" HorizontalAlignment="Stretch">
                         <Grid RowDefinitions="*, *" ColumnDefinitions="*, *">

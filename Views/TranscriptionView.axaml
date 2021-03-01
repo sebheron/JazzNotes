@@ -14,7 +14,7 @@
   <Grid RowDefinitions="40, *">
     <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="5" BorderThickness="0 0 0 1" BorderBrush="Gray">
       <Grid ColumnDefinitions="100, *">
-        <Button Content="Back" Command="{Binding $parent[Window].DataContext.GoBackToStartup}" />
+        <Button Content="Home" Command="{Binding $parent[Window].DataContext.GoBackToStartup}" />
         <StackPanel HorizontalAlignment="Right" Grid.Column="2" Orientation="Horizontal" Spacing="3">
           <ToggleButton Content="Show Notes" Name="ShowNotes" IsChecked="{Binding ShowNotes}" />
         </StackPanel>

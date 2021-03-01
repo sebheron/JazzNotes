@@ -10,6 +10,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace JazzNotes.ViewModels
 {
@@ -79,7 +80,11 @@ namespace JazzNotes.ViewModels
 
             if (delete == ButtonResult.Yes)
             {
-                var transcription = this.Linker.Transcriptions.Where(x => x.Notes.Contains(note)).First();
+                if (this.Content is NotesEditorViewModel)
+                {
+                    this.GoBackToTranscription();
+                }
+                var transcription = note.Transcription;
                 transcription.Notes.Remove(note);
                 this.StartupVM.RaiseListChanged();
             }

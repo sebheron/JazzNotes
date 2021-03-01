@@ -4,10 +4,19 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="JazzNotes.Views.NotesEditorView">
+  <UserControl.Styles>
+    <Style Selector="Button.link">
+      <Setter Property="BorderThickness" Value="0"/>
+      <Setter Property="Background" Value="Transparent"/>
+    </Style>
+  </UserControl.Styles>
   <Grid RowDefinitions="40, *">
     <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="5" BorderThickness="0 0 0 1" BorderBrush="Gray">
       <Grid ColumnDefinitions="100, *">
         <Button Content="Back" Command="{Binding $parent[Window].DataContext.GoBackToTranscription}" />
+        <StackPanel HorizontalAlignment="Right" Grid.Column="2" Orientation="Horizontal" Spacing="3">
+          <Button Content="Delete Note" Command="{Binding DeleteNote}" />
+        </StackPanel>
       </Grid>
     </Border>
     <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Disabled">
@@ -15,7 +24,10 @@
         <Border DockPanel.Dock="Top" Margin="5" BorderBrush="Gray" BorderThickness="1" HorizontalAlignment="Stretch">
           <Image Source="{Binding Image}" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
         </Border>
-        <Label Margin="5" DockPanel.Dock="Top" Content="{Binding TranscriptionName}" />
+        <Button Command="{Binding $parent[Window].DataContext.OpenTranscription}" CommandParameter="{Binding Transcription}"
+                Margin="5" DockPanel.Dock="Top" Classes="link" Padding="0">
+          <TextBlock Foreground="Blue" Text="{Binding TranscriptionName}" TextDecorations="Underline" />
+        </Button>
         <TextBox DockPanel.Dock="Top" Watermark="Note" Margin="5" AcceptsReturn="True" TextWrapping="Wrap" Text="{Binding Text}" />
         <StackPanel DockPanel.Dock="Bottom" VerticalAlignment="Bottom" Orientation="Vertical">
           <ItemsControl Items="{Binding Tags}">

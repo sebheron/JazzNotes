@@ -48,6 +48,11 @@ namespace JazzNotes.ViewModels
         public string TranscriptionName => this.note.Transcription.Name;
 
         /// <summary>
+        /// The transcription for the note.
+        /// </summary>
+        public Transcription Transcription => this.note.Transcription;
+
+        /// <summary>
         /// Tags for the note.
         /// </summary>
         public ObservableCollection<Tag> Tags => this.note.Tags;
@@ -97,6 +102,16 @@ namespace JazzNotes.ViewModels
         public void RemoveTag(Tag tag)
         {
             this.note.RemoveTag(tag);
+        }
+
+        /// <summary>
+        /// Deletes this note.
+        /// </summary>
+        public void DeleteNote()
+        {
+            var mvm = (MainWindowViewModel)WindowHelper.MainWindow.DataContext;
+            mvm.TranscriptionVM.DeleteNote(this);
+            mvm.DeleteNote(note);
         }
     }
 }

@@ -81,5 +81,13 @@ namespace JazzNotes.Models
             }
             return getTranscription;
         }
+
+        public IList<Tag> GetUsedTags()
+        {
+            return this.Transcriptions.SelectMany(x => x.Tags)
+                    .GroupBy(x => x.Name)
+                    .Select(x => x.First())
+                    .ToList();
+        }
     }
 }
