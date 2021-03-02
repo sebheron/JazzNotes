@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Avalonia.Collections;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -13,12 +14,13 @@ namespace JazzNotes.Models
         {
             this.AllTags = new List<Tag>();
             this.Transcriptions = new List<Transcription>();
+            this.Tasks = new AvaloniaList<TaskNote>();
         }
 
         /// <summary>
         /// Tasks for each note.
         /// </summary>
-        public IList<TaskNote> Tasks { get; }
+        public AvaloniaList<TaskNote> Tasks { get; }
 
         /// <summary>
         /// All of the transcriptions available.

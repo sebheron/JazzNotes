@@ -21,7 +21,7 @@
     </Border>
     <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Disabled">
       <DockPanel>
-        <Border DockPanel.Dock="Top" Margin="5" BorderBrush="Gray" BorderThickness="1" HorizontalAlignment="Stretch">
+        <Border DockPanel.Dock="Top" Margin="5" BorderBrush="Gray" BorderThickness="1" HorizontalAlignment="Stretch" MaxHeight="300">
           <Image Source="{Binding Image}" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
         </Border>
         <Button Command="{Binding $parent[Window].DataContext.OpenTranscription}" CommandParameter="{Binding Transcription}"

@@ -85,6 +85,38 @@ namespace JazzNotes.ViewModels
         }
 
         /// <summary>
+        /// The list of tasks to display.
+        /// </summary>
+        public AvaloniaList<TaskNote> TaskItems
+        {
+            get
+            {
+                var keywords = this.GetKeyWords();
+                if (keywords != null)
+                {
+                    var tags = this.GetApplicableTags(keywords);
+                    int count = tags.Count();
+
+                    var allTasks = this.linker.Tasks;
+
+                    var tasks = new AvaloniaList<TaskNote>();
+
+                    foreach (var task in allTasks)
+                    {
+                        var noteCount = task.Note.Tags.Select(x => x.Name).Intersect(tags.Select(x => x.Name)).Count();
+                        if (noteCount >= count)
+                        {
+                            tasks.Add(task);
+                        }
+                    }
+
+                    return tasks;
+                }
+                return this.linker.Tasks;
+            }
+        }
+
+        /// <summary>
         /// The search query.
         /// </summary>
         public string Search

@@ -65,7 +65,7 @@ namespace JazzNotes.ViewModels
         /// <param name="note">The note to delete.</param>
         public async void DeleteNote(Note note)
         {
-            var name = note.Text.Length > 20 ? note.Text.Substring(0, 20) : note.Text;
+            var name = note.Text.Length > 20 ? note.Text.Substring(0, 20) + "..." : note.Text;
             var messageBoxStandardWindow = MessageBoxManager
                     .GetMessageBoxStandardWindow("JazzNotes", $"Are you sure you want to delete the note: {name}?", ButtonEnum.YesNo);
             var delete = await messageBoxStandardWindow.ShowDialog(WindowHelper.MainWindow);
@@ -95,6 +95,34 @@ namespace JazzNotes.ViewModels
             if (delete == ButtonResult.Yes)
             {
                 this.Linker.Transcriptions.Remove(transcription);
+                this.StartupVM.RaiseListChanged();
+            }
+        }
+
+        /// <summary>
+        /// Adds a note to the tasks list.
+        /// </summary>
+        /// <param name="note">The note to add.</param>
+        public void AddNoteToTasks(Note note)
+        {
+            var taskNote = new TaskNote(note);
+            this.Linker.Tasks.Add(taskNote);
+        }
+
+        /// <summary>
+        /// Deletes a task.
+        /// </summary>
+        /// <param name="task">The task to delete.</param>
+        public async void DeleteTask(TaskNote task)
+        {
+            var name = task.Note.Text.Length > 20 ? task.Note.Text.Substring(0, 20) + "..." : task.Note.Text;
+            var messageBoxStandardWindow = MessageBoxManager
+                    .GetMessageBoxStandardWindow("JazzNotes", $"Are you sure you want to remove the task for note: {name}?", ButtonEnum.YesNo);
+            var delete = await messageBoxStandardWindow.ShowDialog(WindowHelper.MainWindow);
+
+            if (delete == ButtonResult.Yes)
+            {
+                this.Linker.Tasks.Remove(task);
                 this.StartupVM.RaiseListChanged();
             }
         }

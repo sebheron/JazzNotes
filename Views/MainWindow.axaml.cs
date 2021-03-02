@@ -32,20 +32,7 @@ namespace JazzNotes.Views
 
         private void OnMainWindowClosing(object sender, CancelEventArgs e)
         {
-            if (this.viewModel != null && this.viewModel.Content is TranscriptionViewModel)
-            {
-                e.Cancel = true;
-                this.viewModel.GoBackToStartup();
-            }
-            else if (this.viewModel != null && this.viewModel.Content is NotesEditorViewModel)
-            {
-                e.Cancel = true;
-                this.viewModel.GoBackToTranscription();
-            }
-            else if (this.viewModel != null)
-            {
-                FileHelper.SaveLinker(this.viewModel.Linker);
-            }
+            FileHelper.SaveLinker(this.viewModel.Linker);
         }
     }
 }

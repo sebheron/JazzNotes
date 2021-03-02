@@ -11,11 +11,19 @@ namespace JazzNotes.Models
         /// <summary>
         /// Creates a task note.
         /// </summary>
-        /// <param name="note">The note.</param>
         public TaskNote(Note note)
         {
             this.Note = note;
             this.Checked = false;
+        }
+
+        /// <summary>
+        /// Creates a task note.
+        /// </summary>
+        public TaskNote(Note note, bool check)
+        {
+            this.Note = note;
+            this.Checked = check;
         }
 
         /// <summary>
