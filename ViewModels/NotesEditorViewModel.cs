@@ -1,10 +1,10 @@
 ﻿using Avalonia;
+using Avalonia.Collections;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using JazzNotes.Helpers;
 using JazzNotes.Models;
 using ReactiveUI;
-using System.Collections.ObjectModel;
 
 namespace JazzNotes.ViewModels
 {
@@ -55,7 +55,12 @@ namespace JazzNotes.ViewModels
         /// <summary>
         /// Tags for the note.
         /// </summary>
-        public ObservableCollection<Tag> Tags => this.note.Tags;
+        public AvaloniaList<Tag> Tags => this.note.Tags;
+
+        /// <summary>
+        /// Tags for the note.
+        /// </summary>
+        public AvaloniaList<Task> Tasks => this.note.Tasks;
 
         /// <summary>
         /// Color for the note.
@@ -73,6 +78,19 @@ namespace JazzNotes.ViewModels
         public bool Shown { get; set; }
 
         /// <summary>
+        /// The title for the note.
+        /// </summary>
+        public string Title
+        {
+            get => this.note.Title;
+            set
+            {
+                this.note.Title = value;
+                this.RaisePropertyChanged(nameof(this.Title));
+            }
+        }
+
+        /// <summary>
         /// The text for the note.
         /// </summary>
         public string Text
@@ -83,6 +101,23 @@ namespace JazzNotes.ViewModels
                 this.note.Text = value;
                 this.RaisePropertyChanged(nameof(this.Text));
             }
+        }
+
+        /// <summary>
+        /// Add a new task to the note.
+        /// </summary>
+        /// <param name="name">Name of task.</param>
+        public void AddTask(string name)
+        {
+            this.note.AddTask(name);
+        }
+
+        /// <summary>
+        /// Remove a task.
+        /// </summary>
+        public void RemoveTask(Task task)
+        {
+            this.note.RemoveTask(task);
         }
 
         /// <summary>
@@ -98,7 +133,6 @@ namespace JazzNotes.ViewModels
         /// <summary>
         /// Remove a tag.
         /// </summary>
-        /// <returns></returns>
         public void RemoveTag(Tag tag)
         {
             this.note.RemoveTag(tag);

@@ -1,6 +1,3 @@
-using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Input;
 using JazzNotes.Helpers;
 using JazzNotes.Models;
 using MessageBox.Avalonia;
@@ -8,9 +5,6 @@ using MessageBox.Avalonia.Enums;
 using ReactiveUI;
 using System;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace JazzNotes.ViewModels
 {
@@ -26,9 +20,7 @@ namespace JazzNotes.ViewModels
         public MainWindowViewModel()
         {
             this.pdfHelper = new PdfHelper();
-
             this.Linker = FileHelper.LoadLinker();
-
             this.Content = this.StartupVM = new StartupViewModel(this.Linker);
         }
 

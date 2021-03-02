@@ -34,7 +34,7 @@ namespace JazzNotes.Views
             this.cover = this.FindControl<Rectangle>("Cover");
             this.grid = this.FindControl<Grid>("PointGrid");
             this.image = this.FindControl<Image>("Image");
-            
+
             this.scrollViewer = this.FindControl<ScrollViewer>("ScrollViewer");
         }
 
@@ -94,7 +94,7 @@ namespace JazzNotes.Views
 
             var diff = this.GetDifference(currentPosition, otherPosition);
 
-            return new Thickness(left ? otherPosition.X : otherPosition.X - diff.X, top ? otherPosition.Y: otherPosition.Y - diff.Y, 0, 0);
+            return new Thickness(left ? otherPosition.X : otherPosition.X - diff.X, top ? otherPosition.Y : otherPosition.Y - diff.Y, 0, 0);
         }
 
         private Point GetDifference(Point currentPosition, Point otherPosition)

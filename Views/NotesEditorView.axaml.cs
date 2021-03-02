@@ -1,15 +1,13 @@
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
-using JazzNotes.Models;
 using JazzNotes.ViewModels;
 
 namespace JazzNotes.Views
 {
     public class NotesEditorView : UserControl
     {
-        private TextBox tagsTextBox;
+        private TextBox tagsTextBox, tasksTextBox;
 
         public NotesEditorView()
         {
@@ -21,6 +19,8 @@ namespace JazzNotes.Views
             AvaloniaXamlLoader.Load(this);
             this.tagsTextBox = this.FindControl<TextBox>("TagsTextBox");
             this.tagsTextBox.KeyUp += TagKeyUp;
+            this.tasksTextBox = this.FindControl<TextBox>("TasksTextBox");
+            this.tasksTextBox.KeyUp += TaskKeyUp;
         }
 
         private void TagKeyUp(object? sender, KeyEventArgs e)
@@ -36,6 +36,15 @@ namespace JazzNotes.Views
             else if (e.Key == Key.Space)
             {
                 this.tagsTextBox.Text = this.tagsTextBox.Text.Replace(" ", "-");
+            }
+        }
+
+        private void TaskKeyUp(object? sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                ((NotesEditorViewModel)this.DataContext).AddTask(this.tasksTextBox.Text);
+                this.tasksTextBox.Text = string.Empty;
             }
         }
     }

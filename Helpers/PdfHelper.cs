@@ -1,16 +1,12 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Media.Imaging;
 using ImageMagick;
 using MessageBox.Avalonia;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace JazzNotes.Helpers
@@ -51,6 +47,7 @@ namespace JazzNotes.Helpers
         {
             OpenFileDialog myDialog = new OpenFileDialog();
             myDialog.Filters.Add(new FileDialogFilter() { Name = "PDF files (*.PDF)", Extensions = new List<string> { "pdf" } });
+            myDialog.Filters.Add(new FileDialogFilter() { Name = "PNG Image files (*.PNG)", Extensions = new List<string> { "png" } });
             myDialog.AllowMultiple = false;
 
             var result = await myDialog.ShowAsync(WindowHelper.MainWindow);
@@ -65,6 +62,12 @@ namespace JazzNotes.Helpers
 
             if (File.Exists(newPath))
             {
+                this.LoadImage(newPath);
+                return;
+            }
+            else if (Path.GetExtension(path) == ".png")
+            {
+                File.Copy(path, newPath);
                 this.LoadImage(newPath);
                 return;
             }
@@ -102,7 +105,6 @@ namespace JazzNotes.Helpers
                     .GetMessageBoxStandardWindow("JazzNotes", "Image file is missing and cannot be loaded.");
                 messageBoxStandardWindow.Show();
                 this.Image = null;
-                return;
             }
         }
 

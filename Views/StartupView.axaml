@@ -23,7 +23,7 @@
                       <Button Command="{Binding $parent[Window].DataContext.OpenNote}" CommandParameter="{Binding}"
                               Margin="3" Padding="5" HorizontalAlignment="Stretch">
                         <Grid RowDefinitions="*, *" ColumnDefinitions="*, *">
-                          <TextBlock Text="{Binding Text}" TextWrapping="Wrap" />
+                          <TextBlock Text="{Binding Title}" TextWrapping="Wrap" />
                           <TextBlock Foreground="#555" Margin="0 5 0 0" Grid.Row="1" Text="{Binding Transcription.Name}" TextWrapping="Wrap" />
                           <ItemsControl Grid.RowSpan="2" Grid.Column="1" Items="{Binding Tags}" HorizontalAlignment="Right">
                             <ItemsControl.ItemTemplate>

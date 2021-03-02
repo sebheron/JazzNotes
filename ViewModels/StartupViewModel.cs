@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reactive;
-using Avalonia.Collections;
+﻿using Avalonia.Collections;
 using JazzNotes.Models;
 using ReactiveUI;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace JazzNotes.ViewModels
 {

@@ -6,12 +6,53 @@ using JazzNotes.Helpers;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Xml.Serialization;
 
 namespace JazzNotes.Models
 {
     public class Note
     {
+        /// <summary>
+        /// Creates a new note.
+        /// </summary>
+        public Note(Transcription transcription, Rect snip, Thickness margin)
+        {
+            this.ID = Guid.NewGuid();
+            this.Title = string.Empty;
+            this.Text = string.Empty;
+            this.Transcription = transcription;
+            this.Tasks = new AvaloniaList<Task>();
+            this.Tags = new AvaloniaList<Tag>();
+            this.Snip = snip;
+            this.Margin = margin;
+            this.Color = ColorGenHelper.GenerateRandomBrush();
+        }
+
+        /// <summary>
+        /// Creates a note.
+        /// </summary>
+        public Note(Guid id, Transcription transcription, Rect snip, Thickness margin, string title, string text, SolidColorBrush color)
+        {
+            this.ID = id;
+            this.Title = title;
+            this.Text = text;
+            this.Transcription = transcription;
+            this.Tasks = new AvaloniaList<Task>();
+            this.Tags = new AvaloniaList<Tag>();
+            this.Snip = snip;
+            this.Margin = margin;
+            this.Color = color;
+        }
+
+        /// <summary>
+        /// The id for the note.
+        /// </summary>
+        public Guid ID { get; }
+
+        /// <summary>
+        /// Gets and sets the title of the note.
+        /// </summary>
+        public string Title { get; set; }
+
         /// <summary>
         /// Gets and sets the content of the note.
         /// </summary>
@@ -35,7 +76,17 @@ namespace JazzNotes.Models
         /// <summary>
         /// The list of tags.
         /// </summary>
-        public ObservableCollection<Tag> Tags { get; protected set; }
+        public AvaloniaList<Tag> Tags { get; protected set; }
+
+        /// <summary>
+        /// The list of tasks.
+        /// </summary>
+        public AvaloniaList<Task> Tasks { get; protected set; }
+
+        /// <summary>
+        /// The list of bitmaps.
+        /// </summary>
+        public AvaloniaList<Bitmap> Bitmaps { get; protected set; }
 
         /// <summary>
         /// The color for the note.
@@ -43,29 +94,33 @@ namespace JazzNotes.Models
         public SolidColorBrush Color { get; }
 
         /// <summary>
-        /// Creates a new note.
+        /// Add a new task to the note.
         /// </summary>
-        public Note(Transcription transcription, Rect snip, Thickness margin)
+        /// <param name="name">Name of task.</param>
+        public void AddTask(string name)
         {
-            this.Text = string.Empty;
-            this.Transcription = transcription;
-            this.Tags = new ObservableCollection<Tag>();
-            this.Snip = snip;
-            this.Margin = margin;
-            this.Color = ColorGenHelper.GenerateRandomBrush();
+            var task = new Task(name);
+            this.Tasks.Add(task);
         }
 
         /// <summary>
-        /// Creates a note.
+        /// Add a new task to the note.
         /// </summary>
-        public Note(Transcription transcription, Rect snip, Thickness margin, string text, SolidColorBrush color)
+        /// <param name="name">Name of task.</param>
+        /// <param name="check">Name of check.</param>
+        public void AddTask(string name, bool check)
         {
-            this.Text = text;
-            this.Transcription = transcription;
-            this.Tags = new ObservableCollection<Tag>();
-            this.Snip = snip;
-            this.Margin = margin;
-            this.Color = color;
+            var task = new Task(name, check);
+            this.Tasks.Add(task);
+        }
+
+        /// <summary>
+        /// Removes a task from the note.
+        /// </summary>
+        /// <param name="task">The task to be removed.</param>
+        public void RemoveTask(Task task)
+        {
+            this.Tasks.Remove(task);
         }
 
         /// <summary>

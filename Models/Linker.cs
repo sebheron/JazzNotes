@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
 
 namespace JazzNotes.Models
 {
@@ -17,6 +14,11 @@ namespace JazzNotes.Models
             this.AllTags = new List<Tag>();
             this.Transcriptions = new List<Transcription>();
         }
+
+        /// <summary>
+        /// Tasks for each note.
+        /// </summary>
+        public IList<TaskNote> Tasks { get; }
 
         /// <summary>
         /// All of the transcriptions available.

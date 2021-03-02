@@ -1,7 +1,6 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using JazzNotes.Helpers;
 using JazzNotes.ViewModels;
 using JazzNotes.Views;
 

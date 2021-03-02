@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
 
 namespace JazzNotes.Models
 {
-    public class Transcription : Searchable
+    public class Transcription : Named
     {
         /// <summary>
         /// Gets the filepath for the transcription.

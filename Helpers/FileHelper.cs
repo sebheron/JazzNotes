@@ -2,22 +2,14 @@
 using Avalonia.Media;
 using JazzNotes.Models;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
 using System.Xml.Linq;
-using System.Xml.Serialization;
 
 namespace JazzNotes.Helpers
 {
     public static class FileHelper
     {
-        private static readonly string DataFile = Path.Combine(AppContext.BaseDirectory, "AppData.dat");
+        private static readonly string DataFile = Path.Combine(AppContext.BaseDirectory, "Data.xml");
 
         public static Linker LoadLinker()
         {
@@ -61,27 +53,57 @@ namespace JazzNotes.Helpers
                             {
                                 foreach (var note in transcription.Elements())
                                 {
+                                    var id = note.Attribute("id");
+                                    var title = note.Attribute("title");
                                     var text = note.Attribute("text");
                                     var snip = note.Attribute("snip");
                                     var margin = note.Attribute("margin");
                                     var color = note.Attribute("color");
-                                    var noteTags = note.Elements();
+                                    var noteElements = note.Elements();
 
-                                    if (text == null | snip == null | margin == null | color == null) continue;
+                                    if (snip == null | margin == null | color == null) continue;
+
+                                    var titleValue = string.Empty;
+                                    if (title != null)
+                                    {
+                                        titleValue = title.Value;
+                                    }
+
+                                    var textValue = string.Empty;
+                                    if (text != null)
+                                    {
+                                        textValue = text.Value;
+                                    }
+
+                                    var idValue = Guid.NewGuid();
+                                    if (id != null)
+                                    {
+                                        idValue = Guid.Parse(id.Value);
+                                    }
 
                                     var rect = Rect.Parse(snip.Value);
                                     var thickness = Thickness.Parse(margin.Value);
                                     var brush = new SolidColorBrush(Color.Parse(color.Value), 1);
 
-                                    var newNote = new Note(newTranscription, rect, thickness, text.Value, brush);
+                                    var newNote = new Note(idValue, newTranscription, rect, thickness, titleValue, textValue, brush);
 
-                                    if (noteTags != null)
+                                    if (noteElements != null)
                                     {
-                                        foreach (var tag in noteTags)
+                                        foreach (var element in noteElements)
                                         {
-                                            var name = tag.Attribute("name");
-                                            if (name == null) continue;
-                                            newNote.AddTag(name.Value);
+                                            if (element.Name == "tag")
+                                            {
+                                                var name = element.Attribute("name");
+                                                if (name == null) continue;
+                                                newNote.AddTag(name.Value);
+                                            }
+                                            else if (element.Name == "task")
+                                            {
+                                                var name = element.Attribute("name");
+                                                var check = element.Attribute("check");
+                                                if (name == null || check == null) continue;
+                                                newNote.AddTask(name.Value, bool.Parse(check.Value));
+                                            }
                                         }
                                     }
 
@@ -124,6 +146,8 @@ namespace JazzNotes.Helpers
                     foreach (var note in transcription.Notes)
                     {
                         var ele2 = new XElement("note");
+                        ele2.SetAttributeValue("id", note.ID.ToString());
+                        ele2.SetAttributeValue("title", note.Title);
                         ele2.SetAttributeValue("text", note.Text);
                         ele2.SetAttributeValue("snip", note.Snip.ToString());
                         ele2.SetAttributeValue("margin", note.Margin.ToString());
@@ -132,6 +156,13 @@ namespace JazzNotes.Helpers
                         {
                             var ele3 = new XElement("tag");
                             ele3.SetAttributeValue("name", tag.Name);
+                            ele2.Add(ele3);
+                        }
+                        foreach (var task in note.Tasks)
+                        {
+                            var ele3 = new XElement("task");
+                            ele3.SetAttributeValue("name", task.Name);
+                            ele3.SetAttributeValue("check", task.Checked.ToString());
                             ele2.Add(ele3);
                         }
                         ele.Add(ele2);

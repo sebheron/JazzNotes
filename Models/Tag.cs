@@ -1,15 +1,12 @@
 ﻿using Avalonia.Media;
 using JazzNotes.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Xml.Serialization;
 
 namespace JazzNotes.Models
 {
     /// <summary>
     /// The tag class representing different tags used on notes taken.
     /// </summary>
-    public class Tag : Searchable
+    public class Tag : Named
     {
         /// <summary>
         /// Gets the color of the tag, generated at creation.

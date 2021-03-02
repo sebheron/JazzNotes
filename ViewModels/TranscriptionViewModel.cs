@@ -1,16 +1,9 @@
 ﻿using Avalonia;
 using Avalonia.Collections;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Media.Imaging;
-using Avalonia.Platform;
 using JazzNotes.Helpers;
 using JazzNotes.Models;
 using ReactiveUI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace JazzNotes.ViewModels
 {
