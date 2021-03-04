@@ -10,15 +10,13 @@ namespace JazzNotes.Helpers
 {
     public static class FileHelper
     {
-        private static readonly string DataFile = Path.Combine(AppContext.BaseDirectory, "Data.xml");
-
         public static Linker LoadLinker()
         {
             var linker = new Linker();
 
-            if (File.Exists(DataFile))
+            if (File.Exists(PathHelper.DataFilePath))
             {
-                var root = XElement.Parse(File.ReadAllText(DataFile));
+                var root = XElement.Parse(File.ReadAllText(PathHelper.DataFilePath));
 
                 if (root != null)
                 {
@@ -59,11 +57,12 @@ namespace JazzNotes.Helpers
                                     var title = note.Attribute("title");
                                     var text = note.Attribute("text");
                                     var snip = note.Attribute("snip");
+                                    var size = note.Attribute("size");
                                     var margin = note.Attribute("margin");
                                     var color = note.Attribute("color");
                                     var noteElements = note.Elements();
 
-                                    if (snip == null | margin == null | color == null) continue;
+                                    if (snip == null | size == null | margin == null | color == null) continue;
 
                                     var titleValue = string.Empty;
                                     if (title != null)
@@ -86,8 +85,9 @@ namespace JazzNotes.Helpers
                                     var rect = Rect.Parse(snip.Value);
                                     var thickness = Thickness.Parse(margin.Value);
                                     var brush = new SolidColorBrush(Color.Parse(color.Value), 1);
+                                    var sizeValue = Size.Parse(size.Value);
 
-                                    var newNote = new Note(idValue, newTranscription, rect, thickness, titleValue, textValue, brush);
+                                    var newNote = new Note(idValue, newTranscription, rect, sizeValue, thickness, titleValue, textValue, brush);
 
                                     if (noteElements != null)
                                     {
@@ -105,6 +105,12 @@ namespace JazzNotes.Helpers
                                                 var check = element.Attribute("check");
                                                 if (name == null || check == null) continue;
                                                 newNote.AddTask(name.Value, bool.Parse(check.Value));
+                                            }
+                                            else if (element.Name == "image")
+                                            {
+                                                var imagePath = element.Attribute("path");
+                                                if (imagePath == null) continue;
+                                                newNote.AddImage(imagePath.Value);
                                             }
                                         }
                                     }
@@ -147,67 +153,77 @@ namespace JazzNotes.Helpers
 
         public static void SaveLinker(Linker linker)
         {
-            using (var stream = File.OpenWrite(DataFile))
+            if (File.Exists(PathHelper.DataFilePath))
             {
-                var root = new XElement("link");
-
-                var tags = new XElement("tags");
-                var usedTags = linker.GetUsedTags();
-
-                foreach (var tag in usedTags)
-                {
-                    var ele = new XElement("tag");
-                    ele.SetAttributeValue("name", tag.Name);
-                    ele.SetAttributeValue("color", tag.Color.Color.ToString());
-                    tags.Add(ele);
-                }
-                root.Add(tags);
-
-                var transcriptions = new XElement("transcriptions");
-                foreach (var transcription in linker.Transcriptions)
-                {
-                    var ele = new XElement("transcription");
-                    ele.SetAttributeValue("path", transcription.FilePath);
-                    foreach (var note in transcription.Notes)
-                    {
-                        var ele2 = new XElement("note");
-                        ele2.SetAttributeValue("id", note.ID.ToString());
-                        ele2.SetAttributeValue("title", note.Title);
-                        ele2.SetAttributeValue("text", note.Text);
-                        ele2.SetAttributeValue("snip", note.Snip.ToString());
-                        ele2.SetAttributeValue("margin", note.Margin.ToString());
-                        ele2.SetAttributeValue("color", note.Color.Color.ToString());
-                        foreach (var tag in note.Tags)
-                        {
-                            var ele3 = new XElement("tag");
-                            ele3.SetAttributeValue("name", tag.Name);
-                            ele2.Add(ele3);
-                        }
-                        foreach (var task in note.Tasks)
-                        {
-                            var ele3 = new XElement("task");
-                            ele3.SetAttributeValue("name", task.Name);
-                            ele3.SetAttributeValue("check", task.Checked.ToString());
-                            ele2.Add(ele3);
-                        }
-                        ele.Add(ele2);
-                    }
-                    transcriptions.Add(ele);
-                }
-                root.Add(transcriptions);
-
-                var tasks = new XElement("tasks");
-                foreach (var task in linker.Tasks)
-                {
-                    var ele = new XElement("task");
-                    ele.SetAttributeValue("id", task.Note.ID.ToString());
-                    ele.SetAttributeValue("check", task.Checked.ToString());
-                    tasks.Add(ele);
-                }
-                root.Add(tasks);
-
-                root.Save(stream);
+                File.Delete(PathHelper.DataFilePath);
             }
+
+            using var stream = File.OpenWrite(PathHelper.DataFilePath);
+            var root = new XElement("link");
+
+            var tags = new XElement("tags");
+            var usedTags = linker.GetUsedTags();
+
+            foreach (var tag in usedTags)
+            {
+                var ele = new XElement("tag");
+                ele.SetAttributeValue("name", tag.Name);
+                ele.SetAttributeValue("color", tag.Color.Color.ToString());
+                tags.Add(ele);
+            }
+            root.Add(tags);
+
+            var transcriptions = new XElement("transcriptions");
+            foreach (var transcription in linker.Transcriptions)
+            {
+                var ele = new XElement("transcription");
+                ele.SetAttributeValue("path", transcription.FilePath);
+                foreach (var note in transcription.Notes)
+                {
+                    var ele2 = new XElement("note");
+                    ele2.SetAttributeValue("id", note.ID.ToString());
+                    ele2.SetAttributeValue("title", note.Title);
+                    ele2.SetAttributeValue("text", note.Text);
+                    ele2.SetAttributeValue("snip", note.Snip.ToString());
+                    ele2.SetAttributeValue("size", note.Size.ToString());
+                    ele2.SetAttributeValue("margin", note.Margin.ToString());
+                    ele2.SetAttributeValue("color", note.Color.Color.ToString());
+                    foreach (var tag in note.Tags)
+                    {
+                        var ele3 = new XElement("tag");
+                        ele3.SetAttributeValue("name", tag.Name);
+                        ele2.Add(ele3);
+                    }
+                    foreach (var task in note.Tasks)
+                    {
+                        var ele3 = new XElement("task");
+                        ele3.SetAttributeValue("name", task.Name);
+                        ele3.SetAttributeValue("check", task.Checked.ToString());
+                        ele2.Add(ele3);
+                    }
+                    foreach (var image in note.Images)
+                    {
+                        var ele3 = new XElement("image");
+                        ele3.SetAttributeValue("path", image.FilePath);
+                        ele2.Add(ele3);
+                    }
+                    ele.Add(ele2);
+                }
+                transcriptions.Add(ele);
+            }
+            root.Add(transcriptions);
+
+            var tasks = new XElement("tasks");
+            foreach (var task in linker.Tasks)
+            {
+                var ele = new XElement("task");
+                ele.SetAttributeValue("id", task.Note.ID.ToString());
+                ele.SetAttributeValue("check", task.Checked.ToString());
+                tasks.Add(ele);
+            }
+            root.Add(tasks);
+
+            root.Save(stream);
         }
     }
 }

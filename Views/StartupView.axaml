@@ -7,12 +7,12 @@
   <Grid RowDefinitions="Auto, *" ColumnDefinitions="*">
     <Border BorderThickness="0 0 0 1" BorderBrush="Gray">
       <Grid ColumnDefinitions="Auto, *">
-        <Button Margin="3 0 0 0" Content="New" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Command="{Binding $parent[Window].DataContext.NewTranscription}" />
-        <TextBox Margin="5" Text="{Binding Search}" Grid.Column="1" />
+        <Button Margin="3 0 0 0" Content="New 🎼" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Command="{Binding $parent[Window].DataContext.NewTranscription}" />
+        <TextBox Watermark="Search by tag" Margin="5" Text="{Binding Search}" Grid.Column="1" />
       </Grid>
     </Border>
-    <TabControl Grid.Row="1">
-      <TabItem Header="Notes">
+    <TabControl Grid.Row="1" SelectedIndex="{Binding SelectedIndex}">
+      <TabItem Header="Notes 🎶">
         <Grid RowDefinitions="*, Auto">
           <ScrollViewer HorizontalScrollBarVisibility="Disabled">
             <StackPanel Orientation="Vertical">
@@ -33,7 +33,7 @@
                           <ItemsControl Grid.RowSpan="2" Grid.Column="1" Items="{Binding Tags}" HorizontalAlignment="Right">
                             <ItemsControl.ItemTemplate>
                               <DataTemplate>
-                                <Border Margin="3" Padding="3" CornerRadius="5" Background="{Binding Color}">
+                                <Border Margin="3" Padding="3" CornerRadius="3" Background="{Binding Color}">
                                   <Label HorizontalAlignment="Left" Content="{Binding Name}" />
                                 </Border>
                               </DataTemplate>
@@ -54,7 +54,7 @@
           <Label Margin="3" Content="{Binding NotesCount}" Grid.Row="1" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" />
         </Grid>
       </TabItem>
-      <TabItem Header="Transcriptions">
+      <TabItem Header="Transcriptions 🎼">
         <Grid RowDefinitions="*, 40">
           <ScrollViewer HorizontalScrollBarVisibility="Disabled">
             <StackPanel Orientation="Vertical">
@@ -73,7 +73,7 @@
                           <ItemsControl Grid.Column="1" Items="{Binding Tags}" HorizontalAlignment="Right">
                             <ItemsControl.ItemTemplate>
                               <DataTemplate>
-                                <Border Margin="3" Padding="3" CornerRadius="5" Background="{Binding Color}">
+                                <Border Margin="3" Padding="3" CornerRadius="3" Background="{Binding Color}">
                                   <Label HorizontalAlignment="Left" Content="{Binding Name}" />
                                 </Border>
                               </DataTemplate>
@@ -94,7 +94,7 @@
           <Label Margin="3" Content="{Binding TranscriptionsCount}" Grid.Row="1" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" />
         </Grid>
       </TabItem>
-      <TabItem Header="Tasks">
+      <TabItem Header="Tasks 📋">
         <Grid RowDefinitions="*, Auto">
           <ScrollViewer HorizontalScrollBarVisibility="Disabled">
             <StackPanel Orientation="Vertical">
@@ -108,9 +108,10 @@
                           <MenuItem Command="{Binding $parent[Window].DataContext.DeleteTask}" CommandParameter="{Binding}" Header="Remove Task" />
                         </ContextMenu>
                       </Button.ContextMenu>
-                      <Grid RowDefinitions="*, *" ColumnDefinitions="*, *">
+                      <Grid RowDefinitions="*, *, *" ColumnDefinitions="*, *">
                         <CheckBox Content="{Binding Note.Title}" IsChecked="{Binding Checked}" />
-                        <TextBlock Foreground="#555" Margin="0 5 0 0" Grid.Row="1" Text="{Binding Note.Transcription.Name}" TextWrapping="Wrap" />
+                        <TextBlock Foreground="#888" Margin="0 5 0 0" Grid.Row="1" Text="{Binding Note.Text}" TextWrapping="Wrap" />
+                        <TextBlock Foreground="#555" Margin="0 5 0 0" Grid.Row="2" Text="{Binding Note.Transcription.Name}" TextWrapping="Wrap" />
                       </Grid>
                     </Button>
                   </DataTemplate>

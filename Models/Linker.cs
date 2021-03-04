@@ -86,12 +86,25 @@ namespace JazzNotes.Models
             return getTranscription;
         }
 
+        /// <summary>
+        /// Gets a list of used tags and omits unused ones.
+        /// </summary>
+        /// <returns></returns>
         public IList<Tag> GetUsedTags()
         {
             return this.Transcriptions.SelectMany(x => x.Tags)
                     .GroupBy(x => x.Name)
                     .Select(x => x.First())
                     .ToList();
+        }
+
+        /// <summary>
+        /// Gets whether an image is in use.
+        /// </summary>
+        /// <returns>If the image is in use.</returns>
+        public bool IsImageInUse(ImageContainer imageContainer)
+        {
+            return this.Transcriptions.SelectMany(x => x.Notes).SelectMany(x => x.Images).Any(x => x.FilePath == imageContainer.FilePath);
         }
     }
 }

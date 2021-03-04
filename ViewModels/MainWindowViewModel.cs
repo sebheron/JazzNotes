@@ -5,13 +5,13 @@ using MessageBox.Avalonia.Enums;
 using ReactiveUI;
 using System;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 
 namespace JazzNotes.ViewModels
 {
     public class MainWindowViewModel : ReactiveObject
     {
-        private readonly PdfHelper pdfHelper;
-
         private ViewModelBase content;
 
         /// <summary>
@@ -19,7 +19,7 @@ namespace JazzNotes.ViewModels
         /// </summary>
         public MainWindowViewModel()
         {
-            this.pdfHelper = new PdfHelper();
+            this.PdfHelper = new PdfHelper();
             this.Linker = FileHelper.LoadLinker();
             this.Content = this.StartupVM = new StartupViewModel(this.Linker);
         }
@@ -31,7 +31,7 @@ namespace JazzNotes.ViewModels
         {
             try
             {
-                this.LoadedFile = await this.pdfHelper.ShowDialog();
+                this.LoadedFile = await this.PdfHelper.ShowNewDialog();
             }
             catch
             {
@@ -65,7 +65,7 @@ namespace JazzNotes.ViewModels
         /// <param name="note">The note to delete.</param>
         public async void DeleteNote(Note note)
         {
-            var name = note.Text.Length > 20 ? note.Text.Substring(0, 20) + "..." : note.Text;
+            var name = note.Title.Length > 20 ? note.Title.Substring(0, 20) + "..." : note.Title;
             var messageBoxStandardWindow = MessageBoxManager
                     .GetMessageBoxStandardWindow("JazzNotes", $"Are you sure you want to delete the note: {name}?", ButtonEnum.YesNo);
             var delete = await messageBoxStandardWindow.ShowDialog(WindowHelper.MainWindow);
@@ -76,6 +76,9 @@ namespace JazzNotes.ViewModels
                 {
                     this.GoBackToTranscription();
                 }
+
+                this.Linker.Tasks.RemoveAll(this.Linker.Tasks.Where(x => x.Note.ID == note.ID));
+
                 var transcription = note.Transcription;
                 transcription.Notes.Remove(note);
                 this.StartupVM.RaiseListChanged();
@@ -83,18 +86,30 @@ namespace JazzNotes.ViewModels
         }
 
         /// <summary>
-        /// Open a transcription.
+        /// Deletes a transcription.
         /// </summary>
         /// <param name="transcription">The transcription to delete.</param>
         public async void DeleteTranscription(Transcription transcription)
         {
+            var name = transcription.Name.Length > 20 ? transcription.Name.Substring(0, 20) + "..." : transcription.Name;
             var messageBoxStandardWindow = MessageBoxManager
-                    .GetMessageBoxStandardWindow("JazzNotes", $"Are you sure you want to delete the transcription: {transcription.Name}?", ButtonEnum.YesNo);
+                    .GetMessageBoxStandardWindow("JazzNotes", $"Are you sure you want to delete the transcription: {name}?", ButtonEnum.YesNo);
             var delete = await messageBoxStandardWindow.ShowDialog(WindowHelper.MainWindow);
 
             if (delete == ButtonResult.Yes)
             {
+                var path = transcription.FilePath;
+
+                foreach (var note in transcription.Notes)
+                {
+                    this.Linker.Tasks.RemoveAll(this.Linker.Tasks.Where(x => x.Note.ID == note.ID));
+                }
+
                 this.Linker.Transcriptions.Remove(transcription);
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                }
                 this.StartupVM.RaiseListChanged();
             }
         }
@@ -107,6 +122,7 @@ namespace JazzNotes.ViewModels
         {
             var taskNote = new TaskNote(note);
             this.Linker.Tasks.Add(taskNote);
+            this.StartupVM.SelectedIndex = 2;
         }
 
         /// <summary>
@@ -115,7 +131,7 @@ namespace JazzNotes.ViewModels
         /// <param name="task">The task to delete.</param>
         public async void DeleteTask(TaskNote task)
         {
-            var name = task.Note.Text.Length > 20 ? task.Note.Text.Substring(0, 20) + "..." : task.Note.Text;
+            var name = task.Note.Title.Length > 20 ? task.Note.Title.Substring(0, 20) + "..." : task.Note.Title;
             var messageBoxStandardWindow = MessageBoxManager
                     .GetMessageBoxStandardWindow("JazzNotes", $"Are you sure you want to remove the task for note: {name}?", ButtonEnum.YesNo);
             var delete = await messageBoxStandardWindow.ShowDialog(WindowHelper.MainWindow);
@@ -169,16 +185,14 @@ namespace JazzNotes.ViewModels
             {
                 if (String.IsNullOrEmpty(value)) return;
 
-                var transcription = this.Linker.GetOrAddTranscription(value);
-                this.pdfHelper.Clean();
+                this.PdfHelper.Clean();
+                this.PdfHelper.LoadPDF(value);
 
-                this.pdfHelper.LoadPDF(value);
+                if (this.PdfHelper.Image == null) return;
 
-                if (this.pdfHelper.Image != null)
-                {
-                    this.Content = this.TranscriptionVM = new TranscriptionViewModel(this, transcription, this.pdfHelper);
-                    this.TranscriptionVM.Image = this.pdfHelper.Image;
-                }
+                var transcription = this.Linker.GetOrAddTranscription(this.PdfHelper.FilePath);
+
+                this.Content = this.TranscriptionVM = new TranscriptionViewModel(this, transcription, this.PdfHelper.Image);
             }
         }
 
@@ -196,5 +210,10 @@ namespace JazzNotes.ViewModels
         /// The linker for the entire application.
         /// </summary>
         public Linker Linker { get; }
+
+        /// <summary>
+        /// The pdf helper for the entire application.
+        /// </summary>
+        public PdfHelper PdfHelper { get; }
     }
 }

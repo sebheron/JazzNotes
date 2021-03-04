@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
+using JazzNotes.Helpers;
 using JazzNotes.ViewModels;
 using System;
 
@@ -50,9 +51,10 @@ namespace JazzNotes.Views
         private void OnImagePressed(object sender, PointerPressedEventArgs e)
         {
             var pointerPoint = e.GetCurrentPoint(this.image);
-            if (pointerPoint.Properties.IsLeftButtonPressed
-                || !pointerPoint.Properties.IsRightButtonPressed
+            if (pointerPoint.Properties.IsRightButtonPressed
+                || !pointerPoint.Properties.IsLeftButtonPressed
                 || !this.viewmodel.ShowNotes) return;
+            this.viewmodel.CurrentCursor = CursorHelper.CrossCursor;
             this.start = pointerPoint.Position;
             this.visualStart = e.GetPosition(this.grid);
             this.pressed = true;
@@ -68,6 +70,7 @@ namespace JazzNotes.Views
             {
                 this.pressed = false;
                 this.cover.IsVisible = false;
+                this.viewmodel.CurrentCursor = CursorHelper.ArrowCursor;
 
                 var currentPos = e.GetPosition(this.image);
                 var checkMargin = this.GetMargin(currentPos, this.start);
@@ -78,13 +81,15 @@ namespace JazzNotes.Views
 
         private void OnImageMoved(object sender, PointerEventArgs e)
         {
-            var currentPos = e.GetPosition(this.grid);
+            var currentPos = e.GetPointerPoint(this.grid);
             if (this.pressed)
             {
-                this.cover.Margin = this.GetMargin(currentPos, this.visualStart);
-                this.cover.Width = Math.Abs(currentPos.X - this.visualStart.X);
-                this.cover.Height = Math.Abs(currentPos.Y - this.visualStart.Y);
+                this.cover.Margin = this.GetMargin(currentPos.Position, this.visualStart);
+                this.cover.Width = Math.Abs(currentPos.Position.X - this.visualStart.X);
+                this.cover.Height = Math.Abs(currentPos.Position.Y - this.visualStart.Y);
             }
+            this.pressed = currentPos.Properties.IsLeftButtonPressed;
+            if (!pressed && this.viewmodel.CurrentCursor != CursorHelper.ArrowCursor) this.viewmodel.CurrentCursor = CursorHelper.ArrowCursor;
         }
 
         private Thickness GetMargin(Point currentPosition, Point otherPosition)

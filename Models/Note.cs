@@ -4,7 +4,9 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using JazzNotes.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 
 namespace JazzNotes.Models
@@ -14,7 +16,7 @@ namespace JazzNotes.Models
         /// <summary>
         /// Creates a new note.
         /// </summary>
-        public Note(Transcription transcription, Rect snip, Thickness margin)
+        public Note(Transcription transcription, Rect snip, Size size, Thickness margin)
         {
             this.ID = Guid.NewGuid();
             this.Title = string.Empty;
@@ -22,7 +24,9 @@ namespace JazzNotes.Models
             this.Transcription = transcription;
             this.Tasks = new AvaloniaList<Task>();
             this.Tags = new AvaloniaList<Tag>();
+            this.Images = new AvaloniaList<ImageContainer>();
             this.Snip = snip;
+            this.Size = size;
             this.Margin = margin;
             this.Color = ColorGenHelper.GenerateRandomBrush();
         }
@@ -30,7 +34,7 @@ namespace JazzNotes.Models
         /// <summary>
         /// Creates a note.
         /// </summary>
-        public Note(Guid id, Transcription transcription, Rect snip, Thickness margin, string title, string text, SolidColorBrush color)
+        public Note(Guid id, Transcription transcription, Rect snip, Size size, Thickness margin, string title, string text, SolidColorBrush color)
         {
             this.ID = id;
             this.Title = title;
@@ -38,7 +42,9 @@ namespace JazzNotes.Models
             this.Transcription = transcription;
             this.Tasks = new AvaloniaList<Task>();
             this.Tags = new AvaloniaList<Tag>();
+            this.Images = new AvaloniaList<ImageContainer>();
             this.Snip = snip;
+            this.Size = size;
             this.Margin = margin;
             this.Color = color;
         }
@@ -69,6 +75,11 @@ namespace JazzNotes.Models
         public Rect Snip { get; }
 
         /// <summary>
+        /// The size of the rect for the note.
+        /// </summary>
+        public Size Size { get; }
+
+        /// <summary>
         /// The margin for the snip.
         /// </summary>
         public Thickness Margin { get; }
@@ -86,7 +97,7 @@ namespace JazzNotes.Models
         /// <summary>
         /// The list of bitmaps.
         /// </summary>
-        public AvaloniaList<Bitmap> Bitmaps { get; protected set; }
+        public AvaloniaList<ImageContainer> Images { get; protected set; }
 
         /// <summary>
         /// The color for the note.
@@ -147,6 +158,29 @@ namespace JazzNotes.Models
         {
             this.Tags.Remove(tag);
             this.Transcription.Linker.RemoveTagIfNotInuse(tag);
+        }
+
+        /// <summary>
+        /// Add an image.
+        /// </summary>
+        /// <param name="path">Path to the image.</param>
+        public void AddImage(string path)
+        {
+            var image = new ImageContainer(path);
+            this.Images.Add(image);
+        }
+
+        /// <summary>
+        /// Removes an image.
+        /// </summary>
+        /// <param name="bitmap">The image to remove.</param>
+        public void RemoveImage(ImageContainer image)
+        {
+            if (File.Exists(image.FilePath) && !Transcription.Linker.IsImageInUse(image))
+            {
+                File.Delete(image.FilePath);
+            }
+            this.Images.Remove(image);
         }
     }
 }

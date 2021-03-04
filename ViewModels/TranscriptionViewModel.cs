@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Collections;
+using Avalonia.Input;
 using Avalonia.Media.Imaging;
 using JazzNotes.Helpers;
 using JazzNotes.Models;
@@ -9,30 +10,33 @@ namespace JazzNotes.ViewModels
 {
     public class TranscriptionViewModel : ViewModelBase
     {
-        private MainWindowViewModel mainViewModel;
-        private Bitmap image;
+        private readonly MainWindowViewModel mainViewModel;
+        private readonly Transcription transcription;
+        private readonly PdfHelper pdfHelper;
+
         private AvaloniaList<NotesEditorViewModel> noteVMs;
-        private Transcription transcription;
-        private PdfHelper pdfHelper;
+        private Bitmap image;
         private bool showNotes;
+        private Cursor currentCursor;
 
         /// <summary>
         /// Create new transcription viewmodel.
         /// </summary>
         /// <param name="mainViewModel">Main viewmodel.</param>
         /// <param name="transcription">The transcription.</param>
-        /// <param name="pdfHelper">PDFhelper.</param>
-        public TranscriptionViewModel(MainWindowViewModel mainViewModel, Transcription transcription, PdfHelper pdfHelper)
+        public TranscriptionViewModel(MainWindowViewModel mainViewModel, Transcription transcription, Bitmap image)
         {
             this.mainViewModel = mainViewModel;
             this.noteVMs = new AvaloniaList<NotesEditorViewModel>();
             this.transcription = transcription;
-            this.pdfHelper = pdfHelper;
+            this.pdfHelper = mainViewModel.PdfHelper;
             this.ShowNotes = true;
+            this.Image = image;
+            this.CurrentCursor = CursorHelper.ArrowCursor;
             foreach (var note in transcription.Notes)
             {
-                var bmp = this.pdfHelper.GetSnip(note.Snip);
-                this.noteVMs.Add(new NotesEditorViewModel(bmp, note));
+                var bmp = this.pdfHelper.GetSnip(note.Snip, this.transcription.FilePath);
+                this.noteVMs.Add(new NotesEditorViewModel(bmp, note, this.pdfHelper));
             }
         }
 
@@ -48,7 +52,7 @@ namespace JazzNotes.ViewModels
         /// <summary>
         /// The screen width.
         /// </summary>
-        public double GridWidth => WindowHelper.MainWindow.Screens.Primary.WorkingArea.Width;
+        public double GridWidth => WindowHelper.MaxWidth;
 
         /// <summary>
         /// The notes viewmodels.
@@ -69,6 +73,15 @@ namespace JazzNotes.ViewModels
         }
 
         /// <summary>
+        /// The current cursor.
+        /// </summary>
+        public Cursor CurrentCursor
+        {
+            get => this.currentCursor;
+            set => this.RaiseAndSetIfChanged(ref this.currentCursor, value);
+        }
+
+        /// <summary>
         /// Add a new note.
         /// </summary>
         /// <param name="bounds">Size for the note.</param>
@@ -80,13 +93,13 @@ namespace JazzNotes.ViewModels
             var heightD = pdfHelper.Height / bounds.Height;
 
             var snip = new Rect(actual.Left * widthD, actual.Top * heightD, actual.Width * widthD, actual.Height * heightD);
-            var bmp = this.pdfHelper.GetSnip(snip);
+            var bmp = this.pdfHelper.GetSnip(snip, this.transcription.FilePath);
 
-            var note = new Note(this.transcription, snip, new Thickness(visual.Left, visual.Top, 0, 0));
+            var note = new Note(this.transcription, snip, new Size(visual.Width, visual.Height), new Thickness(visual.Left, visual.Top, 0, 0));
 
             this.transcription.AddNote(note);
 
-            var noteVm = new NotesEditorViewModel(bmp, note);
+            var noteVm = new NotesEditorViewModel(bmp, note, this.pdfHelper);
 
             this.NoteVMs.Add(noteVm);
 
@@ -122,8 +135,8 @@ namespace JazzNotes.ViewModels
             {
                 if (notevm.Text == note.Text
                     && notevm.TranscriptionName == note.Transcription.Name
-                    && notevm.Width == note.Snip.Width
-                    && notevm.Height == note.Snip.Height
+                    && notevm.Width == note.Size.Width
+                    && notevm.Height == note.Size.Height
                     && notevm.Margin == note.Margin
                     && notevm.Color == note.Color)
                 {

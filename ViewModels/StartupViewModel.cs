@@ -9,9 +9,9 @@ namespace JazzNotes.ViewModels
 {
     public class StartupViewModel : ViewModelBase
     {
+        private int selectedIndex;
         private string search;
-
-        private Linker linker;
+        private readonly Linker linker;
 
         /// <summary>
         /// The inital startup viewmodel.
@@ -127,6 +127,15 @@ namespace JazzNotes.ViewModels
                 this.RaiseAndSetIfChanged(ref this.search, value);
                 this.RaiseListChanged();
             }
+        }
+
+        /// <summary>
+        /// The selected tab index.
+        /// </summary>
+        public int SelectedIndex
+        {
+            get => this.selectedIndex;
+            set => this.RaiseAndSetIfChanged(ref this.selectedIndex, value);
         }
 
         /// <summary>

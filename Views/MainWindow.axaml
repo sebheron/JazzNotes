@@ -6,7 +6,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         x:Class="JazzNotes.Views.MainWindow"
-        Icon="/Assets/avalonia-logo.ico" WindowStartupLocation="CenterScreen" WindowState="Maximized"
-        Title="JazzNotes" Opened="OnMainWindowOpened" Width="650"
-        Content="{Binding Content}" Closing="OnMainWindowClosing">
-</Window>
+        Icon="/Assets/avalonia-logo.ico" WindowStartupLocation="CenterScreen"
+        Title="JazzNotes" Opened="OnMainWindowOpened" Width="800"
+        Content="{Binding Content}" Closing="OnMainWindowClosing" Closed="OnMainWindowClosed" />

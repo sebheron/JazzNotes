@@ -22,5 +22,10 @@ namespace JazzNotes.Helpers
                 return window;
             }
         }
+
+        /// <summary>
+        /// Get and set the max width of the window.
+        /// </summary>
+        public static double MaxWidth { get; set; }
     }
 }

@@ -10,32 +10,31 @@ namespace JazzNotes.ViewModels
 {
     public class NotesEditorViewModel : ViewModelBase
     {
-        /// <summary>
-        /// The note.
-        /// </summary>
-        private Note note;
+        private readonly Note note;
+        private readonly PdfHelper pdfHelper;
 
         /// <summary>
         /// Create a new note editor view model
         /// </summary>
         /// <param name="image">The image for the note.</param>
         /// <param name="note">The note model.</param>
-        public NotesEditorViewModel(Bitmap image, Note note)
+        public NotesEditorViewModel(Bitmap image, Note note, PdfHelper pdfHelper)
         {
             this.note = note;
             this.Shown = true;
             this.Image = image;
+            this.pdfHelper = pdfHelper;
         }
 
         /// <summary>
         /// The width of the notes image.
         /// </summary>
-        public double Width => this.note.Snip.Width;
+        public double Width => this.note.Size.Width;
 
         /// <summary>
         /// The height of the notes image.
         /// </summary>
-        public double Height => this.note.Snip.Height;
+        public double Height => this.note.Size.Height;
 
         /// <summary>
         /// The margin for the note (used when positioning the note on the transcription page).
@@ -61,6 +60,11 @@ namespace JazzNotes.ViewModels
         /// Tags for the note.
         /// </summary>
         public AvaloniaList<Task> Tasks => this.note.Tasks;
+
+        /// <summary>
+        /// Images for the note.
+        /// </summary>
+        public AvaloniaList<ImageContainer> Images => this.note.Images;
 
         /// <summary>
         /// Color for the note.
@@ -146,6 +150,25 @@ namespace JazzNotes.ViewModels
             var mvm = (MainWindowViewModel)WindowHelper.MainWindow.DataContext;
             mvm.TranscriptionVM.DeleteNote(this);
             mvm.DeleteNote(note);
+        }
+
+        /// <summary>
+        /// Adds an image.
+        /// </summary>
+        public async void AddImage()
+        {
+            var path = await pdfHelper.ShowAddImageDialog();
+            if (string.IsNullOrEmpty(path)) return;
+            var newPath = pdfHelper.LoadExternalImage(path);
+            this.note.AddImage(newPath);
+        }
+
+        /// <summary>
+        /// Deletes an image.
+        /// </summary>
+        public void RemoveImage(ImageContainer image)
+        {
+            this.note.RemoveImage(image);
         }
     }
 }
