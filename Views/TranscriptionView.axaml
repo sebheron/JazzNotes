@@ -38,7 +38,7 @@
             </ItemsPanelTemplate>
           </ItemsControl.ItemsPanel>
         </ItemsControl>
-        <Rectangle Name="Cover" Opacity="0.5" Fill="#3821ba" Stroke="DarkSlateBlue" StrokeDashArray="5,5,5,5" StrokeDashOffset="5" StrokeThickness="3" IsHitTestVisible="False" Width="50" Height="50"
+        <Rectangle Name="Cover" Opacity="0.5" Fill="#3821ba" Stroke="DarkSlateBlue" StrokeThickness="2" IsHitTestVisible="False" Width="50" Height="50"
                    HorizontalAlignment="Left" VerticalAlignment="Top" IsVisible="False"  />
       </Grid>
     </ScrollViewer>

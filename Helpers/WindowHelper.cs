@@ -26,6 +26,6 @@ namespace JazzNotes.Helpers
         /// <summary>
         /// Get and set the max width of the window.
         /// </summary>
-        public static double MaxWidth { get; set; }
+        public static double MaxWidth => MainWindow.Screens.Primary.WorkingArea.Width;
     }
 }

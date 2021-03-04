@@ -36,7 +36,6 @@ namespace JazzNotes.Views
             {
                 this.WindowState = WindowState.Maximized;
             }
-            WindowHelper.MaxWidth = this.Width;
             this.viewModel = this.DataContext as MainWindowViewModel;
         }
 
