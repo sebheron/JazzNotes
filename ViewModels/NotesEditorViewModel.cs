@@ -149,9 +149,9 @@ namespace JazzNotes.ViewModels
         {
             var mvm = (MainWindowViewModel)WindowHelper.MainWindow.DataContext;
             var delete = await mvm.DeleteNote(note);
-            if (delete)
+            if (delete && mvm.GoBackToTranscription() is TranscriptionViewModel tvm)
             {
-                mvm.GoBackToTranscription();
+                tvm.DeleteNote(this);
             }
         }
 

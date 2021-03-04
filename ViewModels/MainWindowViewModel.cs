@@ -145,7 +145,7 @@ namespace JazzNotes.ViewModels
         /// <summary>
         /// Go back to the transcription or if no transcription is open, go to startup.
         /// </summary>
-        public void GoBackToTranscription()
+        public ViewModelBase GoBackToTranscription()
         {
             if (this.TranscriptionVM != null)
             {
@@ -155,6 +155,8 @@ namespace JazzNotes.ViewModels
             {
                 this.Content = this.StartupVM;
             }
+
+            return this.Content;
         }
 
         /// <summary>

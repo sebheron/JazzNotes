@@ -93,9 +93,12 @@ namespace JazzNotes.Helpers
                 return;
             }
 
+            var settings = new MagickReadSettings()
+            {
+                Density = new Density(120)
+            };
             using var collection = new MagickImageCollection();
-
-            collection.Read(path);
+            collection.Read(path, settings);
 
             using IMagickImage vertical = collection.AppendVertically();
             vertical.Alpha(AlphaOption.Remove);
