@@ -145,11 +145,14 @@ namespace JazzNotes.ViewModels
         /// <summary>
         /// Deletes this note.
         /// </summary>
-        public void DeleteNote()
+        public async void DeleteNote()
         {
             var mvm = (MainWindowViewModel)WindowHelper.MainWindow.DataContext;
-            mvm.TranscriptionVM.DeleteNote(this);
-            mvm.DeleteNote(note);
+            var delete = await mvm.DeleteNote(note);
+            if (delete)
+            {
+                mvm.GoBackToTranscription();
+            }
         }
 
         /// <summary>

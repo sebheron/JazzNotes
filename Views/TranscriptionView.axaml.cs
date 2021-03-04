@@ -21,7 +21,7 @@ namespace JazzNotes.Views
 
         private Point start, visualStart;
 
-        private bool pressed;
+        private bool snipping;
 
         public TranscriptionView()
         {
@@ -51,45 +51,43 @@ namespace JazzNotes.Views
         private void OnImagePressed(object sender, PointerPressedEventArgs e)
         {
             var pointerPoint = e.GetCurrentPoint(this.image);
-            if (pointerPoint.Properties.IsRightButtonPressed
-                || !pointerPoint.Properties.IsLeftButtonPressed
-                || !this.viewmodel.ShowNotes) return;
-            this.viewmodel.CurrentCursor = CursorHelper.CrossCursor;
-            this.start = pointerPoint.Position;
-            this.visualStart = e.GetPosition(this.grid);
-            this.pressed = true;
-            this.cover.IsVisible = true;
-            this.cover.Margin = new Thickness(this.visualStart.X, this.visualStart.Y, 0, 0);
-            this.cover.Width = 0;
-            this.cover.Height = 0;
-        }
 
-        private void OnImageReleased(object sender, PointerReleasedEventArgs e)
-        {
-            if (this.pressed && this.cover.Width > 2 && this.cover.Height > 2)
+            if (pointerPoint.Properties.IsLeftButtonPressed
+                && !pointerPoint.Properties.IsRightButtonPressed)
             {
-                this.pressed = false;
-                this.cover.IsVisible = false;
-                this.viewmodel.CurrentCursor = CursorHelper.ArrowCursor;
-
-                var currentPos = e.GetPosition(this.image);
-                var checkMargin = this.GetMargin(currentPos, this.start);
-                this.viewmodel.AddNote(this.image.Bounds, new Rect(this.cover.Margin.Left, this.cover.Margin.Top, this.cover.Width, this.cover.Height),
-                    new Rect(checkMargin.Left, checkMargin.Top, this.cover.Width, this.cover.Height));
+                this.snipping = !this.snipping;
+                if (this.snipping)
+                {
+                    this.viewmodel.CurrentCursor = CursorHelper.CrossCursor;
+                    this.start = pointerPoint.Position;
+                    this.visualStart = e.GetPosition(this.grid);
+                    this.cover.IsVisible = true;
+                    this.cover.Margin = new Thickness(this.visualStart.X, this.visualStart.Y, 0, 0);
+                    this.cover.Width = 0;
+                    this.cover.Height = 0;
+                }
+                else
+                {
+                    this.viewmodel.CurrentCursor = CursorHelper.ArrowCursor;
+                    this.snipping = false;
+                    this.cover.IsVisible = false;
+                    var currentPos = e.GetPosition(this.image);
+                    var checkMargin = this.GetMargin(currentPos, this.start);
+                    this.viewmodel.AddNote(this.image.Bounds, new Rect(this.cover.Margin.Left, this.cover.Margin.Top, this.cover.Width, this.cover.Height),
+                        new Rect(checkMargin.Left, checkMargin.Top, this.cover.Width, this.cover.Height));
+                }
             }
         }
 
         private void OnImageMoved(object sender, PointerEventArgs e)
         {
-            var currentPos = e.GetPointerPoint(this.grid);
-            if (this.pressed)
+            if (this.snipping)
             {
-                this.cover.Margin = this.GetMargin(currentPos.Position, this.visualStart);
-                this.cover.Width = Math.Abs(currentPos.Position.X - this.visualStart.X);
-                this.cover.Height = Math.Abs(currentPos.Position.Y - this.visualStart.Y);
+                var currentPos = e.GetPosition(this.grid);
+                this.cover.Margin = this.GetMargin(currentPos, this.visualStart);
+                this.cover.Width = Math.Abs(currentPos.X - this.visualStart.X);
+                this.cover.Height = Math.Abs(currentPos.Y - this.visualStart.Y);
             }
-            this.pressed = currentPos.Properties.IsLeftButtonPressed;
-            if (!pressed && this.viewmodel.CurrentCursor != CursorHelper.ArrowCursor) this.viewmodel.CurrentCursor = CursorHelper.ArrowCursor;
         }
 
         private Thickness GetMargin(Point currentPosition, Point otherPosition)

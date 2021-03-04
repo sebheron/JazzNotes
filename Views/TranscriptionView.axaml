@@ -21,7 +21,7 @@
       </Grid>
     </Border>
     <ScrollViewer Name="ScrollViewer" Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-      <Grid Name="PointGrid" Width="{Binding GridWidth}" PointerPressed="OnImagePressed" PointerReleased="OnImageReleased" PointerMoved="OnImageMoved" Cursor="{Binding CurrentCursor}">
+      <Grid Name="PointGrid" Width="{Binding GridWidth}" PointerPressed="OnImagePressed" PointerMoved="OnImageMoved" Cursor="{Binding CurrentCursor}">
         <Image Name="Image" Source="{Binding Image}" Width="1200" HorizontalAlignment="Center" VerticalAlignment="Top" IsHitTestVisible="False" Stretch="Uniform" />
         <ItemsControl IsVisible="{Binding IsChecked, ElementName=ShowNotes}" Items="{Binding NoteVMs}" Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
           <ItemsControl.ItemTemplate>

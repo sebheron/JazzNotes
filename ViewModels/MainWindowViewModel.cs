@@ -7,6 +7,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace JazzNotes.ViewModels
 {
@@ -63,7 +64,7 @@ namespace JazzNotes.ViewModels
         /// Deletes a note.
         /// </summary>
         /// <param name="note">The note to delete.</param>
-        public async void DeleteNote(Note note)
+        public async Task<bool> DeleteNote(Note note)
         {
             var name = note.Title.Length > 20 ? note.Title.Substring(0, 20) + "..." : note.Title;
             var messageBoxStandardWindow = MessageBoxManager
@@ -72,17 +73,15 @@ namespace JazzNotes.ViewModels
 
             if (delete == ButtonResult.Yes)
             {
-                if (this.Content is NotesEditorViewModel)
-                {
-                    this.GoBackToTranscription();
-                }
-
                 this.Linker.Tasks.RemoveAll(this.Linker.Tasks.Where(x => x.Note.ID == note.ID));
 
                 var transcription = note.Transcription;
                 transcription.Notes.Remove(note);
                 this.StartupVM.RaiseListChanged();
+
+                return true;
             }
+            return false;
         }
 
         /// <summary>
