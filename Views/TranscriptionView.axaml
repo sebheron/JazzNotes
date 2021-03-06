@@ -13,9 +13,10 @@
   </UserControl.Styles>
   <Grid RowDefinitions="Auto, *">
     <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="5" BorderThickness="0 0 0 1" BorderBrush="Gray">
-      <Grid ColumnDefinitions="100, *">
+      <Grid ColumnDefinitions="Auto, Auto, *">
         <Button Content="Home 🏠" Command="{Binding $parent[Window].DataContext.GoBackToStartup}" />
-        <StackPanel HorizontalAlignment="Right" Grid.Column="2" Orientation="Horizontal" Spacing="3">
+        <TextBox Text="{Binding TranscriptionName}" BorderBrush="Transparent" Margin="8 0 8 0" Grid.Column="1" />
+        <StackPanel HorizontalAlignment="Right" Grid.Column="3" Orientation="Horizontal" Spacing="3">
           <ToggleSwitch OffContent="Show Notes 🎶" OnContent="Hide Notes 🎶" Name="ShowNotes" IsChecked="{Binding ShowNotes}" VerticalAlignment="Center" />
           <ComboBox SelectedIndex="{Binding ClickMode}">
             <ComboBoxItem Content="View/Edit ✍️" />
@@ -25,26 +26,28 @@
       </Grid>
     </Border>
     <ScrollViewer Name="ScrollViewer" Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-      <Grid Name="PointGrid" Width="{Binding GridWidth}" PointerPressed="OnImagePressed" PointerMoved="OnImageMoved" Cursor="{Binding CurrentCursor}">
-        <Image Name="Image" Source="{Binding Image}" Width="1200" HorizontalAlignment="Center" VerticalAlignment="Top" IsHitTestVisible="False" Stretch="Uniform" />
-        <ItemsControl IsVisible="{Binding IsChecked, ElementName=ShowNotes}" Items="{Binding NoteVMs}" Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-          <ItemsControl.ItemTemplate>
-            <DataTemplate>
-              <Border IsHitTestVisible="{Binding $parent[UserControl].DataContext.CanEditNotes}" Classes="hover" Opacity="0.3" HorizontalAlignment="Left" VerticalAlignment="Top" Background="{Binding Color}" BorderBrush="{Binding Color}"
-                      Margin="{Binding Margin}" Width="{Binding Width}" Height="{Binding Height}">
-                <Button ClickMode="Press" Opacity="0.05" Command="{Binding $parent[UserControl].DataContext.EditNote}" CommandParameter="{Binding}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-              </Border>
-            </DataTemplate>
-          </ItemsControl.ItemTemplate>
-          <ItemsControl.ItemsPanel>
-            <ItemsPanelTemplate>
-              <Grid Background="Transparent" />
-            </ItemsPanelTemplate>
-          </ItemsControl.ItemsPanel>
-        </ItemsControl>
-        <Rectangle Name="Cover" Opacity="0.5" Fill="#3821ba" Stroke="DarkSlateBlue" StrokeThickness="2" IsHitTestVisible="False" Width="50" Height="50"
-                   HorizontalAlignment="Left" VerticalAlignment="Top" IsVisible="False"  />
-      </Grid>
+      <StackPanel>
+        <Grid Name="PointGrid" Width="{Binding GridWidth}" PointerPressed="OnImagePressed" PointerMoved="OnImageMoved" Cursor="{Binding CurrentCursor}">
+          <Image Name="Image" Source="{Binding Image}" Width="1200" HorizontalAlignment="Center" VerticalAlignment="Top" IsHitTestVisible="False" Stretch="Uniform" />
+          <ItemsControl IsVisible="{Binding IsChecked, ElementName=ShowNotes}" Items="{Binding NoteVMs}" Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <Border IsHitTestVisible="{Binding $parent[UserControl].DataContext.CanEditNotes}" Classes="hover" Opacity="0.3" HorizontalAlignment="Left" VerticalAlignment="Top" Background="{Binding Color}" BorderBrush="{Binding Color}"
+                        Margin="{Binding Margin}" Width="{Binding Width}" Height="{Binding Height}">
+                  <Button ClickMode="Press" Opacity="0.05" Command="{Binding $parent[UserControl].DataContext.EditNote}" CommandParameter="{Binding}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                </Border>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate>
+                <Grid Background="Transparent" />
+              </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+          </ItemsControl>
+          <Rectangle Name="Cover" Opacity="0.5" Fill="#3821ba" Stroke="DarkSlateBlue" StrokeThickness="2" IsHitTestVisible="False" Width="50" Height="50"
+                     HorizontalAlignment="Left" VerticalAlignment="Top" IsVisible="False"  />
+        </Grid>
+      </StackPanel>
     </ScrollViewer>
   </Grid>
 </UserControl>

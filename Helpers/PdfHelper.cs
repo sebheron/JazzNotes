@@ -37,19 +37,18 @@ namespace JazzNotes.Helpers
         /// Show the new dialog.
         /// </summary>
         /// <returns>The path retrieved.</returns>
-        public async Task<string> ShowNewDialog()
+        public async Task<string[]> ShowNewDialog()
         {
             OpenFileDialog myDialog = new OpenFileDialog()
             {
                 Title = "Add New Transcription",
-                AllowMultiple = false
+                AllowMultiple = true
             };
-            myDialog.Filters.Add(new FileDialogFilter() { Name = "PDF files (*.PDF)", Extensions = new List<string> { "pdf" } });
-            myDialog.Filters.Add(new FileDialogFilter() { Name = "Image files (*.PNG)", Extensions = new List<string> { "png" } });
+            myDialog.Filters.Add(new FileDialogFilter() { Name = "Supported files", Extensions = new List<string> { "pdf", "png" } });
 
             var result = await myDialog.ShowAsync(WindowHelper.MainWindow);
 
-            return result[0];
+            return result;
         }
 
         /// <summary>
@@ -77,16 +76,18 @@ namespace JazzNotes.Helpers
         public void LoadPDF(string path)
         {
             var title = Path.GetFileNameWithoutExtension(path);
-            var newPath = Path.Combine(PathHelper.TranscriptionsDirectory, title + ".png");
+            var newPath = Path.Combine(PathHelper.TranscriptionsDirectory, $"{title}.png");
 
-            if (File.Exists(newPath))
+            int i = 0;
+            while (File.Exists(newPath))
             {
-                this.LoadImage(newPath);
-                return;
+                newPath = Path.Combine(PathHelper.TranscriptionsDirectory, $"{title} {i}.png");
+                i++;
             }
-            else if (Path.GetExtension(path) == ".png")
+
+            if (Path.GetExtension(path) == ".png")
             {
-                using IMagickImage loaded = new MagickImage(path);
+                using var loaded = new MagickImage(path);
                 loaded.Alpha(AlphaOption.Remove);
                 loaded.Write(newPath);
                 this.LoadImage(newPath);
@@ -98,9 +99,11 @@ namespace JazzNotes.Helpers
                 Density = new Density(120)
             };
             using var collection = new MagickImageCollection();
+
             collection.Read(path, settings);
 
-            using IMagickImage vertical = collection.AppendVertically();
+            using var vertical = collection.AppendVertically();
+
             vertical.Alpha(AlphaOption.Remove);
             vertical.Format = MagickFormat.Png;
 
@@ -111,6 +114,69 @@ namespace JazzNotes.Helpers
 
             this.FilePath = newPath;
             this.Image = new Bitmap(newPath);
+        }
+
+        /// <summary>
+        /// Appends a pdf (to the currently loaded image) from path.
+        /// </summary>
+        /// <param name="path">The path for the image to append.</param>
+        public void AppendPDF(string path)
+        {
+            if (string.IsNullOrEmpty(this.FilePath)) return;
+
+            if (Path.GetExtension(path) == ".png")
+            {
+                using var joins = new MagickImageCollection();
+                joins.Add(this.FilePath);
+                joins.Add(path);
+
+                if (joins[0].Width > joins[1].Width)
+                {
+                    joins[1].Resize(new Percentage((joins[0].Width / joins[1].Width) * 100));
+                    joins[1].Sharpen();
+                }
+                else
+                {
+                    joins[0].Resize(new Percentage((joins[1].Width / joins[0].Width) * 100));
+                    joins[0].Sharpen();
+                }
+
+                using var joined = joins.AppendVertically();
+                joined.Alpha(AlphaOption.Remove);
+                joined.Write(this.FilePath);
+
+                this.LoadImage(this.FilePath);
+                return;
+            }
+
+            var settings = new MagickReadSettings()
+            {
+                Density = new Density(120)
+            };
+            using var collection = new MagickImageCollection();
+
+            collection.Read(path, settings);
+
+            using var vertical = collection.AppendVertically();
+
+            vertical.Alpha(AlphaOption.Remove);
+            vertical.Format = MagickFormat.Png;
+
+            var tempPath = string.Format(PathHelper.ImgPath, -1);
+
+            vertical.Write(tempPath);
+
+            using var combine = new MagickImageCollection();
+            combine.Add(this.FilePath);
+            combine.Add(tempPath);
+
+            using var combined = combine.AppendVertically();
+
+            this.Height = combined.Height;
+            this.Width = combined.Width;
+
+            combined.Write(this.FilePath);
+            this.Image = new Bitmap(this.FilePath);
         }
 
         /// <summary>

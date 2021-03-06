@@ -8,13 +8,15 @@ namespace JazzNotes.Models
 {
     public class Transcription
     {
+        private string name;
+
         /// <summary>
         /// Creates a new transcription.
         /// </summary>
-        public Transcription(Linker linker, string filePath, AvaloniaList<Note> notes = null)
+        public Transcription(Linker linker, string filePath, string name = null, AvaloniaList<Note> notes = null)
         {
             this.FilePath = filePath;
-            this.Name = Path.GetFileNameWithoutExtension(filePath);
+            this.Name = name ?? Path.GetFileNameWithoutExtension(filePath);
             this.Linker = linker;
             this.Notes = notes ?? new AvaloniaList<Note>();
 
@@ -24,7 +26,15 @@ namespace JazzNotes.Models
         /// <summary>
         /// Name of the transcription.
         /// </summary>
-        public string Name { get; protected set; }
+        public string Name
+        {
+            get => this.name;
+            set
+            {
+                this.name = value;
+                FileHelper.SaveLinker();
+            }
+        }
 
         /// <summary>
         /// Gets the filepath for the transcription.

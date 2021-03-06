@@ -32,7 +32,7 @@ namespace JazzNotes.ViewModels
         {
             try
             {
-                this.LoadedFile = await this.PdfHelper.ShowNewDialog();
+                this.LoadedFiles = await this.PdfHelper.ShowNewDialog();
             }
             catch
             {
@@ -46,7 +46,8 @@ namespace JazzNotes.ViewModels
         /// <param name="note">The note to open.</param>
         public void OpenNote(Note note)
         {
-            this.LoadedFile = note.Transcription.FilePath;
+            this.LoadSelectedInternalFile(note.Transcription.FilePath);
+            this.OpenLoadedFile();
             this.Content = this.TranscriptionVM.GetNoteViewModel(note);
             this.TranscriptionVM = null;
         }
@@ -57,7 +58,8 @@ namespace JazzNotes.ViewModels
         /// <param name="transcription">The transcription to open.</param>
         public void OpenTranscription(Transcription transcription)
         {
-            this.LoadedFile = transcription.FilePath;
+            this.LoadSelectedInternalFile(transcription.FilePath);
+            this.OpenLoadedFile();
         }
 
         /// <summary>
@@ -179,22 +181,66 @@ namespace JazzNotes.ViewModels
         }
 
         /// <summary>
-        /// The loaded file.
+        /// Loads the selected file.
         /// </summary>
-        public string LoadedFile
+        /// <param name="path">Selected file.</param>
+        public void LoadSelectedInternalFile(string path)
+        {
+            if (String.IsNullOrEmpty(path)) return;
+
+            this.PdfHelper.Clean();
+            this.PdfHelper.LoadImage(path);
+        }
+
+        /// <summary>
+        /// Loads the selected file.
+        /// </summary>
+        /// <param name="path">Selected file.</param>
+        public void LoadSelectedFile(string path)
+        {
+            if (String.IsNullOrEmpty(path)) return;
+
+            this.PdfHelper.Clean();
+            this.PdfHelper.LoadPDF(path);
+        }
+
+        /// <summary>
+        /// Appends the selected file.
+        /// </summary>
+        /// <param name="path">Selected file.</param>
+        public void AppendSelectedFile(string path)
+        {
+            if (String.IsNullOrEmpty(path)) return;
+            this.PdfHelper.AppendPDF(path);
+        }
+
+        /// <summary>
+        /// Opens the loaded file.
+        /// </summary>
+        public void OpenLoadedFile()
+        {
+            if (this.PdfHelper.Image == null) return;
+
+            var transcription = this.Linker.GetOrAddTranscription(this.PdfHelper.FilePath);
+
+            this.Content = this.TranscriptionVM = new TranscriptionViewModel(this, transcription, this.PdfHelper.Image);
+        }
+
+        /// <summary>
+        /// Sets the loaded files.
+        /// </summary>
+        public string[] LoadedFiles
         {
             set
             {
-                if (String.IsNullOrEmpty(value)) return;
-
-                this.PdfHelper.Clean();
-                this.PdfHelper.LoadPDF(value);
-
-                if (this.PdfHelper.Image == null) return;
-
-                var transcription = this.Linker.GetOrAddTranscription(this.PdfHelper.FilePath);
-
-                this.Content = this.TranscriptionVM = new TranscriptionViewModel(this, transcription, this.PdfHelper.Image);
+                this.LoadSelectedFile(value[0]);
+                if (value.Length > 1)
+                {
+                    for (int i = 1; i < value.Length; i++){
+                        this.AppendSelectedFile(value[i]);
+                    }
+                }
+                this.OpenLoadedFile();
             }
         }
 

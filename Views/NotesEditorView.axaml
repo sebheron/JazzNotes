@@ -19,7 +19,7 @@
     </Border>
     <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Disabled">
       <DockPanel>
-        <Border DockPanel.Dock="Top" Margin="5" BorderBrush="Gray" BorderThickness="1" HorizontalAlignment="Stretch" MaxHeight="300">
+        <Border DockPanel.Dock="Top" Margin="5" BorderBrush="Gray" BorderThickness="1" HorizontalAlignment="Stretch" MaxHeight="400">
           <Image Source="{Binding Image}" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
         </Border>
         <Button Command="{Binding $parent[Window].DataContext.OpenTranscription}" CommandParameter="{Binding Transcription}"
@@ -98,7 +98,7 @@
                 <ItemsControl.ItemTemplate>
                   <DataTemplate>
                     <Button Command="{Binding $parent[UserControl].DataContext.RemoveImage}" CommandParameter="{Binding}"
-                            Margin="3" Padding="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MaxHeight="300">
+                            Margin="3" Padding="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MaxHeight="400">
                       <Image Source="{Binding Image}" Stretch="Uniform"/>
                     </Button>
                   </DataTemplate>

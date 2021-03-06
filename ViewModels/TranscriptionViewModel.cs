@@ -42,6 +42,15 @@ namespace JazzNotes.ViewModels
         }
 
         /// <summary>
+        /// Gets and sets the transcription name.
+        /// </summary>
+        public string TranscriptionName
+        {
+            get => this.transcription.Name;
+            set => this.transcription.Name = value;
+        }
+
+        /// <summary>
         /// The current image for the transcription.
         /// </summary>
         public Bitmap Image

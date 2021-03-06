@@ -58,10 +58,17 @@ namespace JazzNotes.Helpers
                         foreach (var transcription in transcriptions.Elements())
                         {
                             var path = transcription.Attribute("path");
+                            var transcriptionName = transcription.Attribute("name");
                             var notes = transcription.Elements();
                             if (path == null) continue;
 
-                            var newTranscription = new Transcription(linker, path.Value);
+                            var nameValue = Path.GetFileNameWithoutExtension(path.Value);
+                            if (transcriptionName != null)
+                            {
+                                nameValue = transcriptionName.Value;
+                            }
+
+                            var newTranscription = new Transcription(linker, path.Value, nameValue);
 
                             if (notes != null)
                             {
@@ -200,6 +207,7 @@ namespace JazzNotes.Helpers
             {
                 var ele = new XElement("transcription");
                 ele.SetAttributeValue("path", transcription.FilePath);
+                ele.SetAttributeValue("name", transcription.Name);
                 foreach (var note in transcription.Notes)
                 {
                     var ele2 = new XElement("note");

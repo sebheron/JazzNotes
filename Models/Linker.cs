@@ -19,7 +19,7 @@ namespace JazzNotes.Models
 
             this.Transcriptions.CollectionChanged += (s, e) => FileHelper.SaveLinker();
             this.Transcriptions.CollectionChanged += (s, e) => FileHelper.SaveLinker();
-            this.Tags.CollectionChanged += (s, e) => FileHelper.SaveLinker();
+            this.AllTags.CollectionChanged += (s, e) => FileHelper.SaveLinker();
         }
 
         /// <summary>
