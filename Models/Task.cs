@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JazzNotes.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,8 +7,10 @@ using System.Threading.Tasks;
 
 namespace JazzNotes.Models
 {
-    public class Task : Saveable
+    public class Task
     {
+        private bool check;
+
         /// <summary>
         /// Create a new task.
         /// </summary>
@@ -34,7 +37,15 @@ namespace JazzNotes.Models
         /// <summary>
         /// Whether the task is checked or not.
         /// </summary>
-        public bool Checked { get; set; }
+        public bool Checked
+        {
+            get => this.check;
+            set
+            {
+                this.check = value;
+                FileHelper.SaveLinker();
+            }
+        }
 
         /// <summary>
         /// 

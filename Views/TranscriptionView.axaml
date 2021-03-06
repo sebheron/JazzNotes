@@ -17,6 +17,10 @@
         <Button Content="Home 🏠" Command="{Binding $parent[Window].DataContext.GoBackToStartup}" />
         <StackPanel HorizontalAlignment="Right" Grid.Column="2" Orientation="Horizontal" Spacing="3">
           <ToggleSwitch OffContent="Show Notes 🎶" OnContent="Hide Notes 🎶" Name="ShowNotes" IsChecked="{Binding ShowNotes}" VerticalAlignment="Center" />
+          <ComboBox SelectedIndex="{Binding ClickMode}">
+            <ComboBoxItem Content="View/Edit ✍️" />
+            <ComboBoxItem Content="Add ➕" />
+          </ComboBox>
         </StackPanel>
       </Grid>
     </Border>
@@ -26,7 +30,7 @@
         <ItemsControl IsVisible="{Binding IsChecked, ElementName=ShowNotes}" Items="{Binding NoteVMs}" Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
           <ItemsControl.ItemTemplate>
             <DataTemplate>
-              <Border Classes="hover" Opacity="0.3" HorizontalAlignment="Left" VerticalAlignment="Top" Background="{Binding Color}" BorderBrush="{Binding Color}"
+              <Border IsHitTestVisible="{Binding $parent[UserControl].DataContext.CanEditNotes}" Classes="hover" Opacity="0.3" HorizontalAlignment="Left" VerticalAlignment="Top" Background="{Binding Color}" BorderBrush="{Binding Color}"
                       Margin="{Binding Margin}" Width="{Binding Width}" Height="{Binding Height}">
                 <Button ClickMode="Press" Opacity="0.05" Command="{Binding $parent[UserControl].DataContext.EditNote}" CommandParameter="{Binding}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
               </Border>

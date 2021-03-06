@@ -1,21 +1,24 @@
-﻿using JazzNotes.Helpers;
+﻿using Avalonia.Collections;
+using JazzNotes.Helpers;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
 namespace JazzNotes.Models
 {
-    public class Transcription : Saveable
+    public class Transcription
     {
         /// <summary>
         /// Creates a new transcription.
         /// </summary>
-        public Transcription(Linker linker, string filePath, IList<Note> notes = null)
+        public Transcription(Linker linker, string filePath, AvaloniaList<Note> notes = null)
         {
             this.FilePath = filePath;
             this.Name = Path.GetFileNameWithoutExtension(filePath);
             this.Linker = linker;
-            this.Notes = notes ?? new List<Note>();
+            this.Notes = notes ?? new AvaloniaList<Note>();
+
+            this.Notes.CollectionChanged += (s, e) => FileHelper.SaveLinker();
         }
 
         /// <summary>
@@ -26,17 +29,17 @@ namespace JazzNotes.Models
         /// <summary>
         /// Gets the filepath for the transcription.
         /// </summary>
-        public readonly string FilePath;
+        public string FilePath { get; }
 
         /// <summary>
         /// The notes for the transcription.
         /// </summary>
-        public readonly IList<Note> Notes;
+        public AvaloniaList<Note> Notes { get; }
 
         /// <summary>
         /// The linker for the application.
         /// </summary>
-        public readonly Linker Linker;
+        public Linker Linker { get; }
 
         /// <summary>
         /// Get the tags in the notes.
@@ -58,7 +61,6 @@ namespace JazzNotes.Models
         public void AddNote(Note note)
         {
             this.Notes.Add(note);
-            FileHelper.SaveLinker();
         }
     }
 }

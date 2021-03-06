@@ -114,7 +114,6 @@ namespace JazzNotes.ViewModels
         public void AddTask(string name)
         {
             this.note.AddTask(name);
-            FileHelper.SaveLinker();
         }
 
         /// <summary>
@@ -123,7 +122,6 @@ namespace JazzNotes.ViewModels
         public void RemoveTask(Task task)
         {
             this.note.RemoveTask(task);
-            FileHelper.SaveLinker();
         }
 
         /// <summary>
@@ -134,7 +132,6 @@ namespace JazzNotes.ViewModels
         public bool AddTag(string name)
         {
             var tag = this.note.AddTag(name);
-            FileHelper.SaveLinker();
             return tag;
         }
 
@@ -144,7 +141,6 @@ namespace JazzNotes.ViewModels
         public void RemoveTag(Tag tag)
         {
             this.note.RemoveTag(tag);
-            FileHelper.SaveLinker();
         }
 
         /// <summary>
@@ -169,7 +165,6 @@ namespace JazzNotes.ViewModels
             if (string.IsNullOrEmpty(path)) return;
             var newPath = pdfHelper.LoadExternalImage(path);
             this.note.AddImage(newPath);
-            FileHelper.SaveLinker();
         }
 
         /// <summary>

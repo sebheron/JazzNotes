@@ -1,19 +1,17 @@
 ﻿using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Media;
-using Avalonia.Media.Imaging;
 using JazzNotes.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 
 namespace JazzNotes.Models
 {
-    public class Note : Saveable
+    public class Note
     {
+        private string title, text;
+
         /// <summary>
         /// Creates a new note.
         /// </summary>
@@ -48,6 +46,10 @@ namespace JazzNotes.Models
             this.Size = size;
             this.Margin = margin;
             this.Color = color;
+
+            this.Tags.CollectionChanged += (s, e) => FileHelper.SaveLinker();
+            this.Tasks.CollectionChanged += (s, e) => FileHelper.SaveLinker();
+            this.Images.CollectionChanged += (s, e) => FileHelper.SaveLinker();
         }
 
         /// <summary>
@@ -58,12 +60,28 @@ namespace JazzNotes.Models
         /// <summary>
         /// Gets and sets the title of the note.
         /// </summary>
-        public string Title { get; set; }
+        public string Title
+        {
+            get => this.title;
+            set
+            {
+                this.title = value;
+                FileHelper.SaveLinker();
+            }
+        }
 
         /// <summary>
         /// Gets and sets the content of the note.
         /// </summary>
-        public string Text { get; set; }
+        public string Text
+        {
+            get => this.text;
+            set
+            {
+                this.text = value;
+                FileHelper.SaveLinker();
+            }
+        }
 
         /// <summary>
         /// The transcription the note is for.
@@ -113,7 +131,6 @@ namespace JazzNotes.Models
         {
             var task = new Task(name);
             this.Tasks.Add(task);
-            FileHelper.SaveLinker();
         }
 
         /// <summary>
@@ -125,7 +142,6 @@ namespace JazzNotes.Models
         {
             var task = new Task(name, check);
             this.Tasks.Add(task);
-            FileHelper.SaveLinker();
         }
 
         /// <summary>
@@ -135,7 +151,6 @@ namespace JazzNotes.Models
         public void RemoveTask(Task task)
         {
             this.Tasks.Remove(task);
-            FileHelper.SaveLinker();
         }
 
         /// <summary>
@@ -150,7 +165,6 @@ namespace JazzNotes.Models
             if (!contains)
             {
                 this.Tags.Add(this.Transcription.Linker.GetOrAddTag(name));
-                FileHelper.SaveLinker();
             }
             return !contains;
         }
@@ -163,7 +177,6 @@ namespace JazzNotes.Models
         {
             this.Tags.Remove(tag);
             this.Transcription.Linker.RemoveTagIfNotInuse(tag);
-            FileHelper.SaveLinker();
         }
 
         /// <summary>
@@ -174,7 +187,6 @@ namespace JazzNotes.Models
         {
             var image = new ImageContainer(path);
             this.Images.Add(image);
-            FileHelper.SaveLinker();
         }
 
         /// <summary>
@@ -188,7 +200,6 @@ namespace JazzNotes.Models
                 File.Delete(image.FilePath);
             }
             this.Images.Remove(image);
-            FileHelper.SaveLinker();
         }
     }
 }

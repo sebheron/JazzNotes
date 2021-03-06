@@ -6,16 +6,20 @@ using System.Linq;
 
 namespace JazzNotes.Models
 {
-    public class Linker : Saveable
+    public class Linker
     {
         /// <summary>
         /// Create new linker
         /// </summary>
         public Linker()
         {
-            this.AllTags = new List<Tag>();
-            this.Transcriptions = new List<Transcription>();
+            this.AllTags = new AvaloniaList<Tag>();
+            this.Transcriptions = new AvaloniaList<Transcription>();
             this.Tasks = new AvaloniaList<TaskNote>();
+
+            this.Transcriptions.CollectionChanged += (s, e) => FileHelper.SaveLinker();
+            this.Transcriptions.CollectionChanged += (s, e) => FileHelper.SaveLinker();
+            this.Tags.CollectionChanged += (s, e) => FileHelper.SaveLinker();
         }
 
         /// <summary>
@@ -26,12 +30,12 @@ namespace JazzNotes.Models
         /// <summary>
         /// All of the transcriptions available.
         /// </summary>
-        public IList<Transcription> Transcriptions { get; }
+        public AvaloniaList<Transcription> Transcriptions { get; }
 
         /// <summary>
         /// Gets all tags for all notes and transcriptions.
         /// </summary>
-        public readonly IList<Tag> AllTags;
+        public readonly AvaloniaList<Tag> AllTags;
 
         /// <summary>
         /// Gets a tag by name.
@@ -54,7 +58,6 @@ namespace JazzNotes.Models
             {
                 getTag = new Tag(name);
                 this.AllTags.Add(getTag);
-                FileHelper.SaveLinker();
             }
             return getTag;
         }
@@ -69,7 +72,6 @@ namespace JazzNotes.Models
             if (!allTagsComplete.Contains(tag))
             {
                 this.AllTags.Remove(tag);
-                FileHelper.SaveLinker();
             }
         }
 
@@ -85,7 +87,6 @@ namespace JazzNotes.Models
             {
                 getTranscription = new Transcription(this, filePath);
                 this.Transcriptions.Add(getTranscription);
-                FileHelper.SaveLinker();
             }
             return getTranscription;
         }

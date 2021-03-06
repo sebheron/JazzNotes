@@ -6,7 +6,7 @@ namespace JazzNotes.Models
     /// <summary>
     /// The tag class representing different tags used on notes taken.
     /// </summary>
-    public class Tag : Saveable
+    public class Tag
     {
         /// <summary>
         /// Creates a new tag.

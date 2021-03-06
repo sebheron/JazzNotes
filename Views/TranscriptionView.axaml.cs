@@ -53,12 +53,12 @@ namespace JazzNotes.Views
             var pointerPoint = e.GetCurrentPoint(this.image);
 
             if (pointerPoint.Properties.IsLeftButtonPressed
-                && !pointerPoint.Properties.IsRightButtonPressed)
+                && !pointerPoint.Properties.IsRightButtonPressed
+                && this.viewmodel.ClickMode == 1)
             {
                 this.snipping = !this.snipping;
                 if (this.snipping)
                 {
-                    this.viewmodel.CurrentCursor = CursorHelper.CrossCursor;
                     this.start = pointerPoint.Position;
                     this.visualStart = e.GetPosition(this.grid);
                     this.cover.IsVisible = true;
@@ -68,7 +68,6 @@ namespace JazzNotes.Views
                 }
                 else
                 {
-                    this.viewmodel.CurrentCursor = CursorHelper.ArrowCursor;
                     this.snipping = false;
                     this.cover.IsVisible = false;
                     var currentPos = e.GetPosition(this.image);

@@ -123,7 +123,6 @@ namespace JazzNotes.ViewModels
             var taskNote = new TaskNote(note);
             this.Linker.Tasks.Add(taskNote);
             this.StartupVM.SelectedIndex = 2;
-            FileHelper.SaveLinker();
         }
 
         /// <summary>

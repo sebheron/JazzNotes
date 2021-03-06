@@ -16,8 +16,9 @@ namespace JazzNotes.ViewModels
 
         private AvaloniaList<NotesEditorViewModel> noteVMs;
         private Bitmap image;
-        private bool showNotes;
+        private bool showNotes, canEditNotes;
         private Cursor currentCursor;
+        private int clickMode;
 
         /// <summary>
         /// Create new transcription viewmodel.
@@ -32,7 +33,7 @@ namespace JazzNotes.ViewModels
             this.pdfHelper = mainViewModel.PdfHelper;
             this.ShowNotes = true;
             this.Image = image;
-            this.CurrentCursor = CursorHelper.ArrowCursor;
+            this.ClickMode = 0;
             foreach (var note in transcription.Notes)
             {
                 var bmp = this.pdfHelper.GetSnip(note.Snip, this.transcription.FilePath);
@@ -73,12 +74,35 @@ namespace JazzNotes.ViewModels
         }
 
         /// <summary>
-        /// The current cursor.
+        /// Whether notes should be shown or not.
+        /// </summary>
+        public bool CanEditNotes
+        {
+            get => this.canEditNotes;
+            set => this.RaiseAndSetIfChanged(ref this.canEditNotes, value);
+        }
+
+        /// <summary>
+        /// Gets and sets the current cursor.
         /// </summary>
         public Cursor CurrentCursor
         {
             get => this.currentCursor;
             set => this.RaiseAndSetIfChanged(ref this.currentCursor, value);
+        }
+
+        /// <summary>
+        /// Gets and sets the clickmode.
+        /// </summary>
+        public int ClickMode
+        {
+            get => this.clickMode;
+            set
+            {
+                this.CanEditNotes = value == 0;
+                this.CurrentCursor = value == 0 ? CursorHelper.ArrowCursor : CursorHelper.CrossCursor;
+                this.RaiseAndSetIfChanged(ref this.clickMode, value);
+            }
         }
 
         /// <summary>
@@ -104,8 +128,6 @@ namespace JazzNotes.ViewModels
             this.NoteVMs.Add(noteVm);
 
             this.mainViewModel.Content = noteVm;
-
-            FileHelper.SaveLinker();
         }
 
         /// <summary>
