@@ -11,10 +11,21 @@ namespace JazzNotes.Helpers
 {
     public static class FileHelper
     {
+        private static bool loading;
+
+        /// <summary>
+        /// Gets the loaded linker.
+        /// </summary>
         public static Linker Linker { get; private set; }
 
+        /// <summary>
+        /// Loads in a linker.
+        /// </summary>
+        /// <returns>The loaded linker.</returns>
         public static Linker LoadLinker()
         {
+            loading = true;
+
             var linker = new Linker();
 
             if (File.Exists(PathHelper.DataFilePath))
@@ -151,11 +162,17 @@ namespace JazzNotes.Helpers
                 }
             }
             Linker = linker;
+            loading = false;
             return linker;
         }
 
+        /// <summary>
+        /// Saves the loaded linker.
+        /// </summary>
         public static void SaveLinker()
         {
+            if (loading) return;
+
             Debug.WriteLine("Requested save.");
 
             if (File.Exists(PathHelper.DataFilePath))
