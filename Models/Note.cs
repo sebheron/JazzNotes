@@ -6,12 +6,13 @@ using JazzNotes.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 
 namespace JazzNotes.Models
 {
-    public class Note
+    public class Note : Saveable
     {
         /// <summary>
         /// Creates a new note.
@@ -112,6 +113,7 @@ namespace JazzNotes.Models
         {
             var task = new Task(name);
             this.Tasks.Add(task);
+            FileHelper.SaveLinker();
         }
 
         /// <summary>
@@ -123,6 +125,7 @@ namespace JazzNotes.Models
         {
             var task = new Task(name, check);
             this.Tasks.Add(task);
+            FileHelper.SaveLinker();
         }
 
         /// <summary>
@@ -132,6 +135,7 @@ namespace JazzNotes.Models
         public void RemoveTask(Task task)
         {
             this.Tasks.Remove(task);
+            FileHelper.SaveLinker();
         }
 
         /// <summary>
@@ -146,6 +150,7 @@ namespace JazzNotes.Models
             if (!contains)
             {
                 this.Tags.Add(this.Transcription.Linker.GetOrAddTag(name));
+                FileHelper.SaveLinker();
             }
             return !contains;
         }
@@ -158,6 +163,7 @@ namespace JazzNotes.Models
         {
             this.Tags.Remove(tag);
             this.Transcription.Linker.RemoveTagIfNotInuse(tag);
+            FileHelper.SaveLinker();
         }
 
         /// <summary>
@@ -168,6 +174,7 @@ namespace JazzNotes.Models
         {
             var image = new ImageContainer(path);
             this.Images.Add(image);
+            FileHelper.SaveLinker();
         }
 
         /// <summary>
@@ -181,6 +188,7 @@ namespace JazzNotes.Models
                 File.Delete(image.FilePath);
             }
             this.Images.Remove(image);
+            FileHelper.SaveLinker();
         }
     }
 }

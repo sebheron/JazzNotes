@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace JazzNotes.Models
 {
-    public class Task : Named
+    public class Task : Saveable
     {
         /// <summary>
         /// Create a new task.
@@ -27,8 +27,18 @@ namespace JazzNotes.Models
         }
 
         /// <summary>
+        /// Name of the task.
+        /// </summary>
+        public string Name { get; protected set; }
+
+        /// <summary>
         /// Whether the task is checked or not.
         /// </summary>
         public bool Checked { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Display => $"• {this.Name} " + (this.Checked ? "✔️" : string.Empty);
     }
 }

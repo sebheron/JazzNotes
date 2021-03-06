@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace JazzNotes.Models
 {
-    public class TaskNote
+    public class TaskNote : Saveable
     {
         /// <summary>
         /// Creates a task note.

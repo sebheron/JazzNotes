@@ -104,6 +104,8 @@ namespace JazzNotes.ViewModels
             this.NoteVMs.Add(noteVm);
 
             this.mainViewModel.Content = noteVm;
+
+            FileHelper.SaveLinker();
         }
 
         /// <summary>

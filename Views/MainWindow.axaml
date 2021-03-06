@@ -8,4 +8,4 @@
         x:Class="JazzNotes.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico" WindowStartupLocation="CenterScreen"
         Title="JazzNotes" Opened="OnMainWindowOpened" Width="800"
-        Content="{Binding Content}" Closing="OnMainWindowClosing" Closed="OnMainWindowClosed" />
+        Content="{Binding Content}" Closed="OnMainWindowClosed" />

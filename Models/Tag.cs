@@ -6,13 +6,8 @@ namespace JazzNotes.Models
     /// <summary>
     /// The tag class representing different tags used on notes taken.
     /// </summary>
-    public class Tag : Named
+    public class Tag : Saveable
     {
-        /// <summary>
-        /// Gets the color of the tag, generated at creation.
-        /// </summary>
-        public ISolidColorBrush Color { get; }
-
         /// <summary>
         /// Creates a new tag.
         /// </summary>
@@ -33,5 +28,15 @@ namespace JazzNotes.Models
             this.Name = name;
             this.Color = color;
         }
+
+        /// <summary>
+        /// Name of the tag.
+        /// </summary>
+        public string Name { get; protected set; }
+
+        /// <summary>
+        /// Gets the color of the tag, generated at creation.
+        /// </summary>
+        public ISolidColorBrush Color { get; }
     }
 }

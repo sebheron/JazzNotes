@@ -108,10 +108,17 @@
                           <MenuItem Command="{Binding $parent[Window].DataContext.DeleteTask}" CommandParameter="{Binding}" Header="Remove Task" />
                         </ContextMenu>
                       </Button.ContextMenu>
-                      <Grid RowDefinitions="*, *, *" ColumnDefinitions="*, *">
+                      <Grid RowDefinitions="*, *, *, *" ColumnDefinitions="*, *">
                         <CheckBox Content="{Binding Note.Title}" IsChecked="{Binding Checked}" />
                         <TextBlock Foreground="#888" Margin="0 5 0 0" Grid.Row="1" Text="{Binding Note.Text}" TextWrapping="Wrap" />
                         <TextBlock Foreground="#555" Margin="0 5 0 0" Grid.Row="2" Text="{Binding Note.Transcription.Name}" TextWrapping="Wrap" />
+                        <ItemsControl Items="{Binding Note.Tasks}" Grid.Row="3">
+                          <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                              <TextBlock Margin="0 3 3 3" Text="{Binding Display}" Foreground="#AAA" />
+                            </DataTemplate>
+                          </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                       </Grid>
                     </Button>
                   </DataTemplate>

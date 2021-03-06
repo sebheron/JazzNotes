@@ -1,11 +1,28 @@
-﻿using System.Collections.Generic;
+﻿using JazzNotes.Helpers;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
 namespace JazzNotes.Models
 {
-    public class Transcription : Named
+    public class Transcription : Saveable
     {
+        /// <summary>
+        /// Creates a new transcription.
+        /// </summary>
+        public Transcription(Linker linker, string filePath, IList<Note> notes = null)
+        {
+            this.FilePath = filePath;
+            this.Name = Path.GetFileNameWithoutExtension(filePath);
+            this.Linker = linker;
+            this.Notes = notes ?? new List<Note>();
+        }
+
+        /// <summary>
+        /// Name of the transcription.
+        /// </summary>
+        public string Name { get; protected set; }
+
         /// <summary>
         /// Gets the filepath for the transcription.
         /// </summary>
@@ -36,22 +53,12 @@ namespace JazzNotes.Models
         }
 
         /// <summary>
-        /// Creates a new transcription.
-        /// </summary>
-        public Transcription(Linker linker, string filePath, IList<Note> notes = null)
-        {
-            this.FilePath = filePath;
-            this.Name = Path.GetFileNameWithoutExtension(filePath);
-            this.Linker = linker;
-            this.Notes = notes ?? new List<Note>();
-        }
-
-        /// <summary>
         /// Add a new note.
         /// </summary>
         public void AddNote(Note note)
         {
             this.Notes.Add(note);
+            FileHelper.SaveLinker();
         }
     }
 }

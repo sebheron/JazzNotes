@@ -39,11 +39,6 @@ namespace JazzNotes.Views
             this.viewModel = this.DataContext as MainWindowViewModel;
         }
 
-        private void OnMainWindowClosing(object sender, CancelEventArgs e)
-        {
-            FileHelper.SaveLinker(this.viewModel.Linker);
-        }
-
         private void OnMainWindowClosed(object sender, EventArgs e)
         {
             this.viewModel.PdfHelper.Clean();

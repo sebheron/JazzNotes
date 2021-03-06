@@ -101,7 +101,8 @@ namespace JazzNotes.ViewModels
 
                 foreach (var note in transcription.Notes)
                 {
-                    this.Linker.Tasks.RemoveAll(this.Linker.Tasks.Where(x => x.Note.ID == note.ID));
+                    var tasks = this.Linker.Tasks.Where(x => x.Note.ID == note.ID).ToList();
+                    this.Linker.Tasks.RemoveAll(tasks);
                 }
 
                 this.Linker.Transcriptions.Remove(transcription);
@@ -122,6 +123,7 @@ namespace JazzNotes.ViewModels
             var taskNote = new TaskNote(note);
             this.Linker.Tasks.Add(taskNote);
             this.StartupVM.SelectedIndex = 2;
+            FileHelper.SaveLinker();
         }
 
         /// <summary>

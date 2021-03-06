@@ -1,11 +1,12 @@
 ﻿using Avalonia.Collections;
+using JazzNotes.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace JazzNotes.Models
 {
-    public class Linker
+    public class Linker : Saveable
     {
         /// <summary>
         /// Create new linker
@@ -53,6 +54,7 @@ namespace JazzNotes.Models
             {
                 getTag = new Tag(name);
                 this.AllTags.Add(getTag);
+                FileHelper.SaveLinker();
             }
             return getTag;
         }
@@ -67,6 +69,7 @@ namespace JazzNotes.Models
             if (!allTagsComplete.Contains(tag))
             {
                 this.AllTags.Remove(tag);
+                FileHelper.SaveLinker();
             }
         }
 
@@ -82,6 +85,7 @@ namespace JazzNotes.Models
             {
                 getTranscription = new Transcription(this, filePath);
                 this.Transcriptions.Add(getTranscription);
+                FileHelper.SaveLinker();
             }
             return getTranscription;
         }

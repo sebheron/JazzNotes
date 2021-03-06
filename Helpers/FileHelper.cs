@@ -2,6 +2,7 @@
 using Avalonia.Media;
 using JazzNotes.Models;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
@@ -10,6 +11,8 @@ namespace JazzNotes.Helpers
 {
     public static class FileHelper
     {
+        public static Linker Linker { get; private set; }
+
         public static Linker LoadLinker()
         {
             var linker = new Linker();
@@ -147,12 +150,14 @@ namespace JazzNotes.Helpers
                     }
                 }
             }
-
+            Linker = linker;
             return linker;
         }
 
-        public static void SaveLinker(Linker linker)
+        public static void SaveLinker()
         {
+            Debug.WriteLine("Requested save.");
+
             if (File.Exists(PathHelper.DataFilePath))
             {
                 File.Delete(PathHelper.DataFilePath);
@@ -162,7 +167,7 @@ namespace JazzNotes.Helpers
             var root = new XElement("link");
 
             var tags = new XElement("tags");
-            var usedTags = linker.GetUsedTags();
+            var usedTags = Linker.GetUsedTags();
 
             foreach (var tag in usedTags)
             {
@@ -174,7 +179,7 @@ namespace JazzNotes.Helpers
             root.Add(tags);
 
             var transcriptions = new XElement("transcriptions");
-            foreach (var transcription in linker.Transcriptions)
+            foreach (var transcription in Linker.Transcriptions)
             {
                 var ele = new XElement("transcription");
                 ele.SetAttributeValue("path", transcription.FilePath);
@@ -214,7 +219,7 @@ namespace JazzNotes.Helpers
             root.Add(transcriptions);
 
             var tasks = new XElement("tasks");
-            foreach (var task in linker.Tasks)
+            foreach (var task in Linker.Tasks)
             {
                 var ele = new XElement("task");
                 ele.SetAttributeValue("id", task.Note.ID.ToString());
@@ -224,6 +229,8 @@ namespace JazzNotes.Helpers
             root.Add(tasks);
 
             root.Save(stream);
+
+            Debug.WriteLine("Successfully saved.");
         }
     }
 }
