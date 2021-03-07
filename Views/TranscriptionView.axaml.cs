@@ -13,8 +13,6 @@ namespace JazzNotes.Views
     {
         private TranscriptionViewModel viewmodel;
 
-        private ScrollViewer scrollViewer;
-
         private Image image;
 
         private Control cover, grid;
@@ -35,8 +33,6 @@ namespace JazzNotes.Views
             this.cover = this.FindControl<Rectangle>("Cover");
             this.grid = this.FindControl<Grid>("PointGrid");
             this.image = this.FindControl<Image>("Image");
-
-            this.scrollViewer = this.FindControl<ScrollViewer>("ScrollViewer");
         }
 
         protected override void OnDataContextChanged(EventArgs e)
@@ -66,14 +62,24 @@ namespace JazzNotes.Views
                     this.cover.Width = 0;
                     this.cover.Height = 0;
                 }
+                else if (e.KeyModifiers == KeyModifiers.Shift)
+                {
+                    this.snipping = false;
+                    this.cover.IsVisible = false;
+                    var currentPos = e.GetPosition(this.image);
+                    var checkMargin = this.GetMargin(currentPos, this.start);
+                    this.viewmodel.AddDisplayRect(this.image.Bounds, new Rect(this.cover.Margin.Left, this.cover.Margin.Top, this.cover.Width, this.cover.Height),
+                        new Rect(checkMargin.Left, checkMargin.Top, this.cover.Width, this.cover.Height));
+                }
                 else
                 {
                     this.snipping = false;
                     this.cover.IsVisible = false;
                     var currentPos = e.GetPosition(this.image);
                     var checkMargin = this.GetMargin(currentPos, this.start);
-                    this.viewmodel.AddNote(this.image.Bounds, new Rect(this.cover.Margin.Left, this.cover.Margin.Top, this.cover.Width, this.cover.Height),
+                    this.viewmodel.AddDisplayRect(this.image.Bounds, new Rect(this.cover.Margin.Left, this.cover.Margin.Top, this.cover.Width, this.cover.Height),
                         new Rect(checkMargin.Left, checkMargin.Top, this.cover.Width, this.cover.Height));
+                    this.viewmodel.AddNote();
                 }
             }
         }

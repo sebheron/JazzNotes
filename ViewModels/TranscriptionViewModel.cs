@@ -5,6 +5,7 @@ using Avalonia.Media.Imaging;
 using JazzNotes.Helpers;
 using JazzNotes.Models;
 using ReactiveUI;
+using System.Linq;
 
 namespace JazzNotes.ViewModels
 {
@@ -15,6 +16,7 @@ namespace JazzNotes.ViewModels
         private readonly PdfHelper pdfHelper;
 
         private AvaloniaList<NotesEditorViewModel> noteVMs;
+        private AvaloniaList<Snip> additions;
         private Bitmap image;
         private bool showNotes, canEditNotes;
         private Cursor currentCursor;
@@ -29,6 +31,7 @@ namespace JazzNotes.ViewModels
         {
             this.mainViewModel = mainViewModel;
             this.noteVMs = new AvaloniaList<NotesEditorViewModel>();
+            this.Additions = new AvaloniaList<Snip>();
             this.transcription = transcription;
             this.pdfHelper = mainViewModel.PdfHelper;
             this.ShowNotes = true;
@@ -36,8 +39,8 @@ namespace JazzNotes.ViewModels
             this.ClickMode = 0;
             foreach (var note in transcription.Notes)
             {
-                var bmp = this.pdfHelper.GetSnip(note.Snip, this.transcription.FilePath);
-                this.noteVMs.Add(new NotesEditorViewModel(bmp, note, this.pdfHelper));
+                var bmp = this.pdfHelper.GetSnip(note.Snips, this.transcription.FilePath);
+                this.NoteVMs.Add(new NotesEditorViewModel(bmp, note, this.pdfHelper));
             }
         }
 
@@ -71,6 +74,15 @@ namespace JazzNotes.ViewModels
         {
             get => this.noteVMs;
             set => this.RaiseAndSetIfChanged(ref this.noteVMs, value);
+        }
+
+        /// <summary>
+        /// The list of additions.
+        /// </summary>
+        public AvaloniaList<Snip> Additions
+        {
+            get => this.additions;
+            set => this.RaiseAndSetIfChanged(ref this.additions, value);
         }
 
         /// <summary>
@@ -115,26 +127,37 @@ namespace JazzNotes.ViewModels
         }
 
         /// <summary>
-        /// Add a new note.
+        /// Add a display rect.
         /// </summary>
         /// <param name="bounds">Size for the note.</param>
         /// <param name="visual">Visual bounds for note.</param>
         /// <param name="actual">Actual bounds for note.</param>
-        public void AddNote(Rect bounds, Rect visual, Rect actual)
+        public void AddDisplayRect(Rect bounds, Rect visual, Rect actual)
         {
             var widthD = pdfHelper.Width / bounds.Width;
             var heightD = pdfHelper.Height / bounds.Height;
 
             var snip = new Rect(actual.Left * widthD, actual.Top * heightD, actual.Width * widthD, actual.Height * heightD);
-            var bmp = this.pdfHelper.GetSnip(snip, this.transcription.FilePath);
 
-            var note = new Note(this.transcription, snip, new Size(visual.Width, visual.Height), new Thickness(visual.Left, visual.Top, 0, 0));
+            this.Additions.Add(new Snip(snip, new Size(visual.Width, visual.Height), new Thickness(visual.Left, visual.Top, 0, 0)));
+        }
+
+        /// <summary>
+        /// Add a new note.
+        /// </summary>
+        public void AddNote()
+        {
+            var bmp = this.pdfHelper.GetSnip(this.Additions, this.transcription.FilePath);
+
+            var note = new Note(this.transcription, this.Additions);
 
             this.transcription.AddNote(note);
 
             var noteVm = new NotesEditorViewModel(bmp, note, this.pdfHelper);
 
             this.NoteVMs.Add(noteVm);
+
+            this.Additions.Clear();
 
             this.mainViewModel.Content = noteVm;
         }
@@ -168,9 +191,8 @@ namespace JazzNotes.ViewModels
             {
                 if (notevm.Text == note.Text
                     && notevm.TranscriptionName == note.Transcription.Name
-                    && notevm.Width == note.Size.Width
-                    && notevm.Height == note.Size.Height
-                    && notevm.Margin == note.Margin
+                    && notevm.Title == note.Title
+                    && notevm.ID == note.ID
                     && notevm.Color == note.Color)
                 {
                     return notevm;

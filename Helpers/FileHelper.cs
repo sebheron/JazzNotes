@@ -1,4 +1,5 @@
 ﻿using Avalonia;
+using Avalonia.Collections;
 using Avalonia.Media;
 using JazzNotes.Models;
 using System;
@@ -83,7 +84,7 @@ namespace JazzNotes.Helpers
                                     var color = note.Attribute("color");
                                     var noteElements = note.Elements();
 
-                                    if (snip == null | size == null | margin == null | color == null) continue;
+                                    if (color == null) continue;
 
                                     var titleValue = string.Empty;
                                     if (title != null)
@@ -103,12 +104,37 @@ namespace JazzNotes.Helpers
                                         idValue = Guid.Parse(id.Value);
                                     }
 
-                                    var rect = Rect.Parse(snip.Value);
-                                    var thickness = Thickness.Parse(margin.Value);
                                     var brush = new SolidColorBrush(Color.Parse(color.Value), 1);
-                                    var sizeValue = Size.Parse(size.Value);
 
-                                    var newNote = new Note(idValue, newTranscription, rect, sizeValue, thickness, titleValue, textValue, brush);
+                                    var allSnips = new AvaloniaList<Snip>();
+
+                                    if (snip != null && size != null && margin != null)
+                                    {
+                                        var rect = Rect.Parse(snip.Value);
+                                        var sizeValue = Size.Parse(size.Value);
+                                        var thickness = Thickness.Parse(margin.Value);
+                                        allSnips.Add(new Snip(rect, sizeValue, thickness));
+                                    }
+
+                                    if (noteElements != null)
+                                    {
+                                        foreach (var element in noteElements)
+                                        {
+                                            if (element.Name == "snip")
+                                            {
+                                                var snipRect = element.Attribute("rect");
+                                                var snipSize = element.Attribute("size");
+                                                var snipMargin = element.Attribute("margin");
+                                                if (snipRect == null || snipSize == null || snipMargin == null) continue;
+                                                var snipRectValue = Rect.Parse(snipRect.Value);
+                                                var snipSizeValue = Size.Parse(snipSize.Value);
+                                                var snipThicknessValue = Thickness.Parse(snipMargin.Value);
+                                                allSnips.Add(new Snip(snipRectValue, snipSizeValue, snipThicknessValue));
+                                            }
+                                        }
+                                    }
+
+                                    var newNote = new Note(idValue, newTranscription, titleValue, textValue, brush, allSnips);
 
                                     if (noteElements != null)
                                     {
@@ -214,10 +240,15 @@ namespace JazzNotes.Helpers
                     ele2.SetAttributeValue("id", note.ID.ToString());
                     ele2.SetAttributeValue("title", note.Title);
                     ele2.SetAttributeValue("text", note.Text);
-                    ele2.SetAttributeValue("snip", note.Snip.ToString());
-                    ele2.SetAttributeValue("size", note.Size.ToString());
-                    ele2.SetAttributeValue("margin", note.Margin.ToString());
                     ele2.SetAttributeValue("color", note.Color.Color.ToString());
+                    foreach (var snip in note.Snips)
+                    {
+                        var ele3 = new XElement("snip");
+                        ele3.SetAttributeValue("rect", snip.Rect.ToString());
+                        ele3.SetAttributeValue("size", snip.Size.ToString());
+                        ele3.SetAttributeValue("margin", snip.Margin.ToString());
+                        ele2.Add(ele3);
+                    }
                     foreach (var tag in note.Tags)
                     {
                         var ele3 = new XElement("tag");

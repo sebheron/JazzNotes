@@ -15,7 +15,7 @@ namespace JazzNotes.Models
         /// <summary>
         /// Creates a new note.
         /// </summary>
-        public Note(Transcription transcription, Rect snip, Size size, Thickness margin)
+        public Note(Transcription transcription, AvaloniaList<Snip> snips)
         {
             this.ID = Guid.NewGuid();
             this.Title = string.Empty;
@@ -24,16 +24,23 @@ namespace JazzNotes.Models
             this.Tasks = new AvaloniaList<Task>();
             this.Tags = new AvaloniaList<Tag>();
             this.Images = new AvaloniaList<ImageContainer>();
-            this.Snip = snip;
-            this.Size = size;
-            this.Margin = margin;
+            this.Snips = new AvaloniaList<Snip>();
+            foreach (var snip in snips)
+            {
+                this.Snips.Add(snip);
+            }
+
             this.Color = ColorGenHelper.GenerateRandomBrush();
+
+            this.Tags.CollectionChanged += (s, e) => FileHelper.SaveLinker();
+            this.Tasks.CollectionChanged += (s, e) => FileHelper.SaveLinker();
+            this.Images.CollectionChanged += (s, e) => FileHelper.SaveLinker();
         }
 
         /// <summary>
         /// Creates a note.
         /// </summary>
-        public Note(Guid id, Transcription transcription, Rect snip, Size size, Thickness margin, string title, string text, SolidColorBrush color)
+        public Note(Guid id, Transcription transcription, string title, string text, SolidColorBrush color, AvaloniaList<Snip> snips)
         {
             this.ID = id;
             this.Title = title;
@@ -42,9 +49,11 @@ namespace JazzNotes.Models
             this.Tasks = new AvaloniaList<Task>();
             this.Tags = new AvaloniaList<Tag>();
             this.Images = new AvaloniaList<ImageContainer>();
-            this.Snip = snip;
-            this.Size = size;
-            this.Margin = margin;
+            this.Snips = new AvaloniaList<Snip>();
+            foreach (var snip in snips)
+            {
+                this.Snips.Add(snip);
+            }
             this.Color = color;
 
             this.Tags.CollectionChanged += (s, e) => FileHelper.SaveLinker();
@@ -89,19 +98,9 @@ namespace JazzNotes.Models
         public Transcription Transcription { get; }
 
         /// <summary>
-        /// The size of the snip for the note.
+        /// The list of snips for the note.
         /// </summary>
-        public Rect Snip { get; }
-
-        /// <summary>
-        /// The size of the rect for the note.
-        /// </summary>
-        public Size Size { get; }
-
-        /// <summary>
-        /// The margin for the snip.
-        /// </summary>
-        public Thickness Margin { get; }
+        public AvaloniaList<Snip> Snips { get; }
 
         /// <summary>
         /// The list of tags.
@@ -200,6 +199,15 @@ namespace JazzNotes.Models
                 File.Delete(image.FilePath);
             }
             this.Images.Remove(image);
+        }
+
+        /// <summary>
+        /// Add a snip.
+        /// </summary>
+        /// <param name="snip">The snip.</param>
+        public void AddSnip(Snip snip)
+        {
+            this.Snips.Add(snip);
         }
     }
 }

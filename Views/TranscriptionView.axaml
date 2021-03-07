@@ -29,13 +29,34 @@
       <StackPanel>
         <Grid Name="PointGrid" Width="{Binding GridWidth}" PointerPressed="OnImagePressed" PointerMoved="OnImageMoved" Cursor="{Binding CurrentCursor}">
           <Image Name="Image" Source="{Binding Image}" Width="1200" HorizontalAlignment="Center" VerticalAlignment="Top" IsHitTestVisible="False" Stretch="Uniform" />
-          <ItemsControl IsVisible="{Binding IsChecked, ElementName=ShowNotes}" Items="{Binding NoteVMs}" Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+          <ItemsControl IsVisible="{Binding IsChecked, ElementName=ShowNotes}"
+                        Items="{Binding NoteVMs}" Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <ItemsControl.ItemTemplate>
               <DataTemplate>
-                <Border IsHitTestVisible="{Binding $parent[UserControl].DataContext.CanEditNotes}" Classes="hover" Opacity="0.3" HorizontalAlignment="Left" VerticalAlignment="Top" Background="{Binding Color}" BorderBrush="{Binding Color}"
+                <Border IsHitTestVisible="{Binding $parent[UserControl].DataContext.CanEditNotes}" Classes="hover" Opacity="0.3"
+                        HorizontalAlignment="Left" VerticalAlignment="Top" Background="{Binding Color}" BorderBrush="{Binding Color}"
                         Margin="{Binding Margin}" Width="{Binding Width}" Height="{Binding Height}">
-                  <Button ClickMode="Press" Opacity="0.05" Command="{Binding $parent[UserControl].DataContext.EditNote}" CommandParameter="{Binding}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                  <Grid>
+                    <Button ClickMode="Press" Opacity="0.05" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                            Command="{Binding $parent[UserControl].DataContext.EditNote}"
+                      CommandParameter="{Binding}" />
+                    <TextBlock HorizontalAlignment="Right" VerticalAlignment="Bottom" Text="{Binding DisplayTitle}" FontSize="50" Foreground="Black" />
+                  </Grid>
                 </Border>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate>
+                <Grid Background="Transparent" />
+              </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+          </ItemsControl>
+          <ItemsControl IsHitTestVisible="False" Items="{Binding Additions}" Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <Rectangle Opacity="0.5" Fill="#3821ba" Stroke="DarkSlateBlue" StrokeThickness="2" IsHitTestVisible="False"
+                           Margin="{Binding Margin}" Width="{Binding Size.Width}" Height="{Binding Size.Height}"
+                           HorizontalAlignment="Left" VerticalAlignment="Top"/>
               </DataTemplate>
             </ItemsControl.ItemTemplate>
             <ItemsControl.ItemsPanel>

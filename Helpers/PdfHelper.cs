@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using ImageMagick;
+using JazzNotes.Models;
 using MessageBox.Avalonia;
 using System.Collections.Generic;
 using System.IO;
@@ -227,20 +228,31 @@ namespace JazzNotes.Helpers
         /// </summary>
         /// <param name="draw">The snip.</param>
         /// <returns>A bitmap of the snip.</returns>
-        public Bitmap GetSnip(Rect draw, string path)
+        public Bitmap GetSnip(IEnumerable<Snip> snips, string path)
         {
-            var image = new MagickImage();
+            if (snips.Count() < 1) return null;
 
-            image.Read(path);
-            image.Crop(new MagickGeometry((int)draw.Left, (int)draw.Top, (int)draw.Width, (int)draw.Height), Gravity.Northwest);
+            using var collection = new MagickImageCollection();
 
-            image.Format = MagickFormat.Png;
-            image.Alpha(AlphaOption.Remove);
+            var newPath = path;
 
-            var newPath = string.Format(PathHelper.ImgPath, imgPaths.Count + 1);
-            imgPaths.Add(newPath);
+            foreach (var snip in snips)
+            {
+                using var image = new MagickImage();
 
-            image.Write(newPath);
+                image.Read(path);
+                image.Crop(new MagickGeometry((int)snip.Rect.Left, (int)snip.Rect.Top, (int)snip.Rect.Width, (int)snip.Rect.Height), Gravity.Northwest);
+
+                newPath = string.Format(PathHelper.ImgPath, imgPaths.Count + 1);
+                imgPaths.Add(newPath);
+
+                image.Write(newPath);
+
+                collection.Add(newPath);
+            }
+
+            using var horizontal = collection.AppendHorizontally();
+            horizontal.Write(newPath);
 
             return new Bitmap(newPath);
         }

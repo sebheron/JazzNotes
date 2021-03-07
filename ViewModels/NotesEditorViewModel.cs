@@ -5,6 +5,7 @@ using Avalonia.Media.Imaging;
 using JazzNotes.Helpers;
 using JazzNotes.Models;
 using ReactiveUI;
+using System;
 
 namespace JazzNotes.ViewModels
 {
@@ -27,19 +28,29 @@ namespace JazzNotes.ViewModels
         }
 
         /// <summary>
-        /// The width of the notes image.
+        /// The id.
         /// </summary>
-        public double Width => this.note.Size.Width;
+        public Guid ID => this.note.ID;
 
         /// <summary>
-        /// The height of the notes image.
+        /// The height.
         /// </summary>
-        public double Height => this.note.Size.Height;
+        public double Height => this.note.Snips[0].Size.Height;
 
         /// <summary>
-        /// The margin for the note (used when positioning the note on the transcription page).
+        /// The width.
         /// </summary>
-        public Thickness Margin => this.note.Margin;
+        public double Width => this.note.Snips[0].Size.Width;
+
+        /// <summary>
+        /// The margin.
+        /// </summary>
+        public Thickness Margin => this.note.Snips[0].Margin;
+
+        /// <summary>
+        /// The display title.
+        /// </summary>
+        public string DisplayTitle => this.note.Snips.Count > 1 ? "..." : string.Empty;
 
         /// <summary>
         /// The transcription name.
