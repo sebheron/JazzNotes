@@ -112,7 +112,6 @@
               <Button Command="{Binding $parent[UserControl].DataContext.AddImage}"
                       Background="DarkBlue" Margin="3" Content="Add Image" HorizontalAlignment="Stretch"/>
               <TextBlock Margin="5" Text="Tags 🏷️" />
-              <TextBox Watermark="Add Tag" Name="TagsTextBox" Margin="5" HorizontalAlignment="Stretch" AcceptsReturn="False"/>
               <ItemsControl Items="{Binding Tags}">
                 <ItemsControl.ItemTemplate>
                   <DataTemplate>
@@ -128,6 +127,7 @@
                   </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
               </ItemsControl>
+              <AutoCompleteBox Name="TagsTextBox" Watermark="Add Tag" Margin="5" HorizontalAlignment="Stretch" Items="{Binding AutoCompleteItems}"/>
             </StackPanel>
           </TabItem>
         </TabControl>

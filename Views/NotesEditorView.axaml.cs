@@ -7,7 +7,8 @@ namespace JazzNotes.Views
 {
     public class NotesEditorView : UserControl
     {
-        private TextBox tagsTextBox, tasksTextBox;
+        private AutoCompleteBox tagsTextBox;
+        private TextBox tasksTextBox;
 
         public NotesEditorView()
         {
@@ -17,7 +18,7 @@ namespace JazzNotes.Views
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
-            this.tagsTextBox = this.FindControl<TextBox>("TagsTextBox");
+            this.tagsTextBox = this.FindControl<AutoCompleteBox>("TagsTextBox");
             this.tagsTextBox.KeyUp += TagKeyUp;
             this.tasksTextBox = this.FindControl<TextBox>("TasksTextBox");
             this.tasksTextBox.KeyUp += TaskKeyUp;

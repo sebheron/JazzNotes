@@ -6,6 +6,7 @@ using JazzNotes.Helpers;
 using JazzNotes.Models;
 using ReactiveUI;
 using System;
+using System.Linq;
 
 namespace JazzNotes.ViewModels
 {
@@ -76,6 +77,12 @@ namespace JazzNotes.ViewModels
         /// Images for the note.
         /// </summary>
         public AvaloniaList<ImageContainer> Images => this.note.Images;
+
+        /// <summary>
+        /// Gets all the tags for autocomplete.
+        /// </summary>
+        public AvaloniaList<string> AutoCompleteItems => new AvaloniaList<string>(this.note.Transcription.Linker.AllTags
+            .Where(x => !this.Tags.Contains(x)).Select(x => x.Name));
 
         /// <summary>
         /// Color for the note.
