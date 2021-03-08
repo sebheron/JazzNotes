@@ -159,6 +159,7 @@ namespace JazzNotes.ViewModels
         public void RemoveTag(Tag tag)
         {
             this.note.RemoveTag(tag);
+            this.RaisePropertyChanged(nameof(this.AutoCompleteItems));
         }
 
         /// <summary>

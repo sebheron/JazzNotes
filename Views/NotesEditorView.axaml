@@ -73,7 +73,7 @@
               </ItemsControl>
             </StackPanel>
           </TabItem>
-          <TabItem Header="Edit ✏️">
+          <TabItem Header="Edit ✍️">
             <StackPanel HorizontalAlignment="Stretch">
               <TextBlock Margin="5" Text="Information" />
               <TextBox Margin="3" Watermark="Title" Text="{Binding Title}" />
@@ -127,7 +127,7 @@
                   </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
               </ItemsControl>
-              <AutoCompleteBox Name="TagsTextBox" Watermark="Add Tag" Margin="5" HorizontalAlignment="Stretch" Items="{Binding AutoCompleteItems}"/>
+              <AutoCompleteBox Name="TagsTextBox" Watermark="Add Tag" Margin="5" HorizontalAlignment="Stretch" Items="{Binding AutoCompleteItems}" FilterMode="Contains" />
             </StackPanel>
           </TabItem>
         </TabControl>

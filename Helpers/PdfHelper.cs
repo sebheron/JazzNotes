@@ -134,12 +134,10 @@ namespace JazzNotes.Helpers
                 if (joins[0].Width > joins[1].Width)
                 {
                     joins[1].Resize(new Percentage((joins[0].Width / joins[1].Width) * 100));
-                    joins[1].Sharpen();
                 }
                 else
                 {
                     joins[0].Resize(new Percentage((joins[1].Width / joins[0].Width) * 100));
-                    joins[0].Sharpen();
                 }
 
                 using var joined = joins.AppendVertically();
@@ -157,26 +155,17 @@ namespace JazzNotes.Helpers
             using var collection = new MagickImageCollection();
 
             collection.Read(path, settings);
+            collection.Add(this.FilePath);
 
             using var vertical = collection.AppendVertically();
 
             vertical.Alpha(AlphaOption.Remove);
             vertical.Format = MagickFormat.Png;
 
-            var tempPath = string.Format(PathHelper.ImgPath, -1);
+            this.Height = vertical.Height;
+            this.Width = vertical.Width;
 
-            vertical.Write(tempPath);
-
-            using var combine = new MagickImageCollection();
-            combine.Add(this.FilePath);
-            combine.Add(tempPath);
-
-            using var combined = combine.AppendVertically();
-
-            this.Height = combined.Height;
-            this.Width = combined.Width;
-
-            combined.Write(this.FilePath);
+            vertical.Write(this.FilePath);
             this.Image = new Bitmap(this.FilePath);
         }
 
