@@ -1,3 +1,4 @@
+using Avalonia;
 using JazzNotes.Helpers;
 using JazzNotes.Models;
 using MessageBox.Avalonia;
@@ -223,7 +224,14 @@ namespace JazzNotes.ViewModels
 
             var transcription = this.Linker.GetOrAddTranscription(this.PdfHelper.FilePath);
 
-            this.Content = this.TranscriptionVM = new TranscriptionViewModel(this, transcription, this.PdfHelper.Image);
+            this.TranscriptionVM = new TranscriptionViewModel(this, transcription, this.PdfHelper.Image);
+
+            if (this.Content is NotesEditorViewModel vm)
+            {
+                this.TranscriptionVM.ScrollPosition = new Vector(0, vm.Margin.Top);
+            }
+
+            this.Content = this.TranscriptionVM;
         }
 
         /// <summary>

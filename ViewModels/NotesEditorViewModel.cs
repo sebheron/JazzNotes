@@ -6,6 +6,7 @@ using JazzNotes.Helpers;
 using JazzNotes.Models;
 using ReactiveUI;
 using System;
+using System.IO;
 using System.Linq;
 
 namespace JazzNotes.ViewModels
@@ -150,6 +151,7 @@ namespace JazzNotes.ViewModels
         public bool AddTag(string name)
         {
             var tag = this.note.AddTag(name);
+            this.RaisePropertyChanged(nameof(this.AutoCompleteItems));
             return tag;
         }
 
@@ -183,7 +185,7 @@ namespace JazzNotes.ViewModels
             var path = await pdfHelper.ShowAddImageDialog();
             if (string.IsNullOrEmpty(path)) return;
             var newPath = pdfHelper.LoadExternalImage(path);
-            this.note.AddImage(newPath);
+            this.note.AddImage(newPath, Path.GetFileNameWithoutExtension(path));
         }
 
         /// <summary>

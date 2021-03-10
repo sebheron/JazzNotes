@@ -21,6 +21,7 @@ namespace JazzNotes.ViewModels
         private bool showNotes, canEditNotes;
         private Cursor currentCursor;
         private int clickMode;
+        private Vector scrollPosition;
 
         /// <summary>
         /// Create new transcription viewmodel.
@@ -124,6 +125,15 @@ namespace JazzNotes.ViewModels
                 this.CurrentCursor = value == 0 ? CursorHelper.ArrowCursor : CursorHelper.CrossCursor;
                 this.RaiseAndSetIfChanged(ref this.clickMode, value);
             }
+        }
+
+        /// <summary>
+        /// The scroll position for the scrollviewer.
+        /// </summary>
+        public Vector ScrollPosition
+        {
+            get => this.scrollPosition;
+            set => this.RaiseAndSetIfChanged(ref this.scrollPosition, value);
         }
 
         /// <summary>

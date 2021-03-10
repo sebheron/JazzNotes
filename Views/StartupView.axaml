@@ -6,9 +6,25 @@
              x:Class="JazzNotes.Views.StartupView">
   <Grid RowDefinitions="Auto, *" ColumnDefinitions="*">
     <Border BorderThickness="0 0 0 1" BorderBrush="Gray">
-      <Grid ColumnDefinitions="Auto, *">
+      <Grid ColumnDefinitions="Auto, Auto, *">
         <Button Margin="3 0 0 0" Content="New 🎼" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Command="{Binding $parent[Window].DataContext.NewTranscription}" />
-        <TextBox Watermark="Search by tag" Margin="5" Text="{Binding Search}" Grid.Column="1" />
+        <ItemsControl Grid.Column="1" Items="{Binding Tags}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Border Margin="3" Padding="3">
+                <Button Command="{Binding $parent[UserControl].DataContext.RemoveTag}" CommandParameter="{Binding}"
+                        Content="{Binding Name}" Background="{Binding Color}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <WrapPanel HorizontalAlignment="Left" VerticalAlignment="Stretch" />
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+        </ItemsControl>
+        <AutoCompleteBox Watermark="Search by tag" Margin="5" Grid.Column="2" KeyUp="TagKeyUp"
+                         HorizontalAlignment="Stretch" Items="{Binding AutoCompleteItems}" FilterMode="Contains" />
       </Grid>
     </Border>
     <TabControl Grid.Row="1" SelectedIndex="{Binding SelectedIndex}">

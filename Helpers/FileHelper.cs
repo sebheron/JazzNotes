@@ -156,8 +156,16 @@ namespace JazzNotes.Helpers
                                             else if (element.Name == "image")
                                             {
                                                 var imagePath = element.Attribute("path");
+                                                var imageName = element.Attribute("name");
                                                 if (imagePath == null) continue;
-                                                newNote.AddImage(imagePath.Value);
+
+                                                var imageNameValue = Path.GetFileNameWithoutExtension(imagePath.Value);
+                                                if (imageName != null)
+                                                {
+                                                    imageNameValue = imageName.Value;
+                                                }
+
+                                                newNote.AddImage(imagePath.Value, imageNameValue);
                                             }
                                         }
                                     }
@@ -266,6 +274,7 @@ namespace JazzNotes.Helpers
                     {
                         var ele3 = new XElement("image");
                         ele3.SetAttributeValue("path", image.FilePath);
+                        ele3.SetAttributeValue("name", image.Name);
                         ele2.Add(ele3);
                     }
                     ele.Add(ele2);

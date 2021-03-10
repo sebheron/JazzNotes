@@ -20,6 +20,7 @@ namespace JazzNotes.ViewModels
         public StartupViewModel(Linker linker)
         {
             this.linker = linker;
+            this.Tags = new AvaloniaList<Tag>();
         }
 
         /// <summary>
@@ -29,28 +30,30 @@ namespace JazzNotes.ViewModels
         {
             get
             {
-                var keywords = this.GetKeyWords();
-                if (keywords != null)
+                var allNotes = this.linker.Transcriptions.SelectMany(x => x.Notes);
+
+                if (this.Tags.Count > 0)
                 {
-                    var tags = this.GetApplicableTags(keywords);
-                    int count = tags.Count();
-
-                    var allNotes = this.linker.Transcriptions.SelectMany(x => x.Notes);
-
                     var notes = new AvaloniaList<Note>();
+                    var tagCount = 0;
 
                     foreach (var note in allNotes)
                     {
-                        var noteCount = note.Tags.Select(x => x.Name).Intersect(tags.Select(x => x.Name)).Count();
-                        if (noteCount >= count)
+                        foreach (var tag in this.Tags)
+                        {
+                            if (!note.Tags.Contains(tag)) continue;
+                            tagCount++;
+                        }
+                        if (tagCount == this.Tags.Count)
                         {
                             notes.Add(note);
                         }
+                        tagCount = 0;
                     }
-
                     return notes;
                 }
-                return new AvaloniaList<Note>(this.linker.Transcriptions.SelectMany(x => x.Notes));
+
+                return new AvaloniaList<Note>(allNotes);
             }
         }
 
@@ -61,26 +64,28 @@ namespace JazzNotes.ViewModels
         {
             get
             {
-                var keywords = this.GetKeyWords();
-                if (keywords != null)
+                if (this.Tags.Count > 0)
                 {
-                    var tags = this.GetApplicableTags(keywords);
-                    int count = tags.Count();
-
                     var transcriptions = new AvaloniaList<Transcription>();
+                    var tagCount = 0;
 
                     foreach (var transcription in this.linker.Transcriptions)
                     {
-                        var transcriptionCount = transcription.Tags.Select(x => x.Name).Intersect(tags.Select(x => x.Name)).Count();
-                        if (transcriptionCount >= count)
+                        foreach (var tag in this.Tags)
+                        {
+                            if (!transcription.Tags.Contains(tag)) continue;
+                            tagCount++;
+                        }
+                        if (tagCount == this.Tags.Count)
                         {
                             transcriptions.Add(transcription);
                         }
+                        tagCount = 0;
                     }
-
                     return transcriptions;
                 }
-                return new AvaloniaList<Transcription>(this.linker.Transcriptions);
+
+                return this.linker.Transcriptions;
             }
         }
 
@@ -91,30 +96,41 @@ namespace JazzNotes.ViewModels
         {
             get
             {
-                var keywords = this.GetKeyWords();
-                if (keywords != null)
+                if (this.Tags.Count > 0)
                 {
-                    var tags = this.GetApplicableTags(keywords);
-                    int count = tags.Count();
-
-                    var allTasks = this.linker.Tasks;
-
                     var tasks = new AvaloniaList<TaskNote>();
+                    var tagCount = 0;
 
-                    foreach (var task in allTasks)
+                    foreach (var task in this.linker.Tasks)
                     {
-                        var noteCount = task.Note.Tags.Select(x => x.Name).Intersect(tags.Select(x => x.Name)).Count();
-                        if (noteCount >= count)
+                        foreach (var tag in this.Tags)
+                        {
+                            if (!task.Note.Tags.Contains(tag)) continue;
+                            tagCount++;
+                        }
+                        if (tagCount == this.Tags.Count)
                         {
                             tasks.Add(task);
                         }
+                        tagCount = 0;
                     }
-
                     return tasks;
                 }
+
                 return this.linker.Tasks;
             }
         }
+
+        /// <summary>
+        /// Gets all the tags for autocomplete.
+        /// </summary>
+        public AvaloniaList<string> AutoCompleteItems => new AvaloniaList<string>(this.linker.AllTags
+            .Where(x => !this.Tags.Contains(x)).Select(x => x.Name));
+
+        /// <summary>
+        /// Tags to search for.
+        /// </summary>
+        public AvaloniaList<Tag> Tags { get; }
 
         /// <summary>
         /// The search query.
@@ -139,17 +155,6 @@ namespace JazzNotes.ViewModels
         }
 
         /// <summary>
-        /// Raises that the lists have been changed.
-        /// </summary>
-        public void RaiseListChanged()
-        {
-            this.RaisePropertyChanged(nameof(this.NoteItems));
-            this.RaisePropertyChanged(nameof(this.NotesCount));
-            this.RaisePropertyChanged(nameof(this.TranscriptionItems));
-            this.RaisePropertyChanged(nameof(this.TranscriptionsCount));
-        }
-
-        /// <summary>
         /// The count for notes.
         /// </summary>
         public string NotesCount => $"Notes: {this.NoteItems.Count}";
@@ -160,32 +165,41 @@ namespace JazzNotes.ViewModels
         public string TranscriptionsCount => $"Transcriptions: {this.TranscriptionItems.Count}";
 
         /// <summary>
-        /// Return the key words.
+        /// Raises that the lists have been changed.
         /// </summary>
-        /// <returns>Returns a list of key words in the search.</returns>
-        private List<string> GetKeyWords()
+        public void RaiseListChanged()
         {
-            if (String.IsNullOrEmpty(this.search)) return null;
-            var split = this.search.Split(" ");
-            return split.Where(x => x.Length > 0).ToList();
+            this.RaisePropertyChanged(nameof(this.NoteItems));
+            this.RaisePropertyChanged(nameof(this.NotesCount));
+            this.RaisePropertyChanged(nameof(this.TranscriptionItems));
+            this.RaisePropertyChanged(nameof(this.TranscriptionsCount));
+            this.RaisePropertyChanged(nameof(this.AutoCompleteItems));
         }
 
         /// <summary>
-        /// Gets a list of applicable tags from keywords.
+        /// Add a tag to search.
         /// </summary>
-        /// <returns>Returns a list of tags.</returns>
-        private IEnumerable<Tag> GetApplicableTags(List<string> keyWords)
+        /// <param name="name">Name of tag.</param>
+        /// <returns>Whether the tag was added or not.</returns>
+        public bool AddTag(string name)
         {
-            for (int i = 0; i < keyWords.Count; i++)
+            var tag = this.linker.AllTags.FirstOrDefault(x => x.Name == name);
+            if (tag != null && !this.Tags.Contains(tag))
             {
-                foreach (var tag in this.linker.AllTags)
-                {
-                    if (tag.Name.ToLower().Contains(keyWords[i].ToLower()))
-                    {
-                        yield return tag;
-                    }
-                }
+                this.Tags.Add(tag);
+                this.RaiseListChanged();
+                return true;
             }
+            return false;
+        }
+
+        /// <summary>
+        /// Remove a tag.
+        /// </summary>
+        public void RemoveTag(Tag tag)
+        {
+            this.Tags.Remove(tag);
+            this.RaiseListChanged();
         }
     }
 }

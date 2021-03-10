@@ -1,21 +1,21 @@
-﻿using Avalonia.Media.Imaging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ReactiveUI;
+using Avalonia.Media.Imaging;
+using JazzNotes.Helpers;
 
 namespace JazzNotes.Models
 {
-    public class ImageContainer
+    public class ImageContainer : ReactiveObject
     {
+        private string name;
+
         /// <summary>
         /// Create a new image container.
         /// </summary>
         /// <param name="path"></param>
-        public ImageContainer(string path)
+        public ImageContainer(string path, string name)
         {
             this.Image = new Bitmap(path);
+            this.Name = name;
             this.FilePath = path;
         }
 
@@ -28,5 +28,18 @@ namespace JazzNotes.Models
         /// The image.
         /// </summary>
         public Bitmap Image { get; }
+
+        /// <summary>
+        /// The image.
+        /// </summary>
+        public string Name
+        {
+            get => this.name;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref this.name, value);
+                FileHelper.SaveLinker();
+            }
+        }
     }
 }

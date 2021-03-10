@@ -25,7 +25,8 @@
         </StackPanel>
       </Grid>
     </Border>
-    <ScrollViewer Name="ScrollViewer" Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+    <ScrollViewer Name="ScrollViewer" Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                  Offset="{Binding ScrollPosition}">
       <StackPanel>
         <Grid Name="PointGrid" Width="{Binding GridWidth}" PointerPressed="OnImagePressed" PointerMoved="OnImageMoved" Cursor="{Binding CurrentCursor}">
           <Image Name="Image" Source="{Binding Image}" Width="1200" HorizontalAlignment="Center" VerticalAlignment="Top" IsHitTestVisible="False" Stretch="Uniform" />
@@ -39,7 +40,7 @@
                   <Grid>
                     <Button ClickMode="Press" Opacity="0.05" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                             Command="{Binding $parent[UserControl].DataContext.EditNote}"
-                      CommandParameter="{Binding}" />
+                            CommandParameter="{Binding}" />
                     <TextBlock HorizontalAlignment="Right" VerticalAlignment="Bottom" Text="{Binding DisplayTitle}" FontSize="50" Foreground="Black" />
                   </Grid>
                 </Border>

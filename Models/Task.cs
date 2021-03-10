@@ -48,8 +48,8 @@ namespace JazzNotes.Models
         }
 
         /// <summary>
-        /// 
+        /// The display string.
         /// </summary>
-        public string Display => $"• {this.Name} " + (this.Checked ? "✔️" : string.Empty);
+        public string Display => $"• {this.Name} " + (this.Checked ? "✅" : string.Empty);
     }
 }

@@ -182,9 +182,9 @@ namespace JazzNotes.Models
         /// Add an image.
         /// </summary>
         /// <param name="path">Path to the image.</param>
-        public void AddImage(string path)
+        public void AddImage(string path, string name)
         {
-            var image = new ImageContainer(path);
+            var image = new ImageContainer(path, name);
             this.Images.Add(image);
         }
 
