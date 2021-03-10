@@ -20,7 +20,7 @@
     <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Disabled">
       <Grid RowDefinitions="Auto, Auto, Auto">
         <Border Margin="5" BorderBrush="Gray" BorderThickness="1" HorizontalAlignment="Stretch" MaxHeight="400">
-          <Image Source="{Binding Image}" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+          <Image DoubleTapped="OpenImageInViewer" Source="{Binding Image}" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
         </Border>
         <Button Grid.Row="1" Command="{Binding $parent[Window].DataContext.OpenTranscription}" CommandParameter="{Binding Transcription}"
                 Margin="5" DockPanel.Dock="Top" Classes="link" Padding="0">
@@ -49,7 +49,7 @@
                     <Border DockPanel.Dock="Top" Margin="5" BorderBrush="Gray" BorderThickness="1" HorizontalAlignment="Stretch">
                       <StackPanel>
                         <TextBlock Text="{Binding Name}" />
-                        <Image Source="{Binding Image}" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MaxHeight="400" />
+                        <Image DoubleTapped="OpenImageInViewer" Source="{Binding Image}" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MaxHeight="400" />
                       </StackPanel>
                     </Border>
                   </DataTemplate>

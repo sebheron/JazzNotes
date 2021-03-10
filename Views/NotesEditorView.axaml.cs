@@ -1,6 +1,9 @@
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media.Imaging;
+using JazzNotes.Helpers;
 using JazzNotes.ViewModels;
 
 namespace JazzNotes.Views
@@ -15,6 +18,19 @@ namespace JazzNotes.Views
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
+        }
+
+        private void OpenImageInViewer(object? sender, RoutedEventArgs e)
+        {
+            if (sender is Image image)
+            {
+                var bmp = image.Source as Bitmap;
+                var currentVm = (NotesEditorViewModel)this.DataContext;
+                var mainVm = (MainWindowViewModel)WindowHelper.MainWindow.DataContext;
+                var imageViewer = new PhotoViewerViewModel(bmp, mainVm, currentVm);
+
+                mainVm.Content = imageViewer;
+            }
         }
 
         private void TagKeyUp(object? sender, KeyEventArgs e)
