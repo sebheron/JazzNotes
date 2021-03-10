@@ -228,7 +228,7 @@ namespace JazzNotes.ViewModels
 
             if (this.Content is NotesEditorViewModel vm)
             {
-                this.TranscriptionVM.ScrollPosition = new Vector(0, vm.Margin.Top);
+                this.TranscriptionVM.ScrollPosition = new Vector(0, Math.Max(vm.Margin.Top - 200, 0));
             }
 
             this.Content = this.TranscriptionVM;

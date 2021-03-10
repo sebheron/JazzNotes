@@ -26,7 +26,7 @@
       </Grid>
     </Border>
     <ScrollViewer Name="ScrollViewer" Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                  Offset="{Binding ScrollPosition}">
+                  ScrollChanged="TranscriptionScrollChanged">
       <StackPanel>
         <Grid Name="PointGrid" Width="{Binding GridWidth}" PointerPressed="OnImagePressed" PointerMoved="OnImageMoved" Cursor="{Binding CurrentCursor}">
           <Image Name="Image" Source="{Binding Image}" Width="1200" HorizontalAlignment="Center" VerticalAlignment="Top" IsHitTestVisible="False" Stretch="Uniform" />

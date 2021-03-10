@@ -6,6 +6,7 @@ using Avalonia.Markup.Xaml;
 using JazzNotes.Helpers;
 using JazzNotes.ViewModels;
 using System;
+using System.Diagnostics;
 
 namespace JazzNotes.Views
 {
@@ -19,7 +20,7 @@ namespace JazzNotes.Views
 
         private Point start, visualStart;
 
-        private bool snipping;
+        private bool snipping, scrolled;
 
         public TranscriptionView()
         {
@@ -80,6 +81,22 @@ namespace JazzNotes.Views
                     this.viewmodel.AddDisplayRect(this.image.Bounds, new Rect(this.cover.Margin.Left, this.cover.Margin.Top, this.cover.Width, this.cover.Height),
                         new Rect(checkMargin.Left, checkMargin.Top, this.cover.Width, this.cover.Height));
                     this.viewmodel.AddNote();
+                }
+            }
+        }
+
+        private void TranscriptionScrollChanged(object? sender, ScrollChangedEventArgs e)
+        {
+            if (sender is ScrollViewer scrollViewer)
+            {
+                if (!scrolled)
+                {
+                    scrollViewer.Offset = this.viewmodel.ScrollPosition;
+                    scrolled = true;
+                }
+                else
+                {
+                    this.viewmodel.ScrollPosition = scrollViewer.Offset;
                 }
             }
         }
