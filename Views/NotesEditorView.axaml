@@ -18,20 +18,20 @@
       </Grid>
     </Border>
     <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Disabled">
-      <DockPanel>
-        <Border DockPanel.Dock="Top" Margin="5" BorderBrush="Gray" BorderThickness="1" HorizontalAlignment="Stretch" MaxHeight="400">
+      <Grid RowDefinitions="Auto, Auto, Auto">
+        <Border Margin="5" BorderBrush="Gray" BorderThickness="1" HorizontalAlignment="Stretch" MaxHeight="400">
           <Image Source="{Binding Image}" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
         </Border>
-        <Button Command="{Binding $parent[Window].DataContext.OpenTranscription}" CommandParameter="{Binding Transcription}"
+        <Button Grid.Row="1" Command="{Binding $parent[Window].DataContext.OpenTranscription}" CommandParameter="{Binding Transcription}"
                 Margin="5" DockPanel.Dock="Top" Classes="link" Padding="0">
           <TextBlock Foreground="LightBlue" Text="{Binding TranscriptionName}" TextDecorations="Underline" />
         </Button>
-        <TabControl DockPanel.Dock="Top">
+        <TabControl Grid.Row="2">
           <TabItem Header="View 🎵">
             <StackPanel HorizontalAlignment="Stretch">
               <TextBlock Margin="5" Text="{Binding Title}" FontSize="35" FontWeight="DemiBold" />
-              <TextBlock Margin="5" TextWrapping="Wrap" Text="{Binding Text}" />
-              <ItemsControl Items="{Binding Tasks}">
+              <TextBlock Margin="5 10 5 5" TextWrapping="Wrap" Text="{Binding Text}" />
+              <ItemsControl Margin="0 5 0 0" Items="{Binding Tasks}">
                 <ItemsControl.ItemTemplate>
                   <DataTemplate>
                     <CheckBox Margin="3" Content="{Binding Name}" IsChecked="{Binding Checked}"/>
@@ -43,13 +43,13 @@
                   </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
               </ItemsControl>
-              <ItemsControl Items="{Binding Images}">
+              <ItemsControl Margin="0 5 0 0" Items="{Binding Images}">
                 <ItemsControl.ItemTemplate>
                   <DataTemplate>
-                    <Border DockPanel.Dock="Top" Margin="5" BorderBrush="Gray" BorderThickness="1" HorizontalAlignment="Stretch" MaxHeight="300">
+                    <Border DockPanel.Dock="Top" Margin="5" BorderBrush="Gray" BorderThickness="1" HorizontalAlignment="Stretch">
                       <StackPanel>
                         <TextBlock Text="{Binding Name}" />
-                        <Image Source="{Binding Image}" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                        <Image Source="{Binding Image}" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MaxHeight="400" />
                       </StackPanel>
                     </Border>
                   </DataTemplate>
@@ -60,7 +60,7 @@
                   </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
               </ItemsControl>
-              <ItemsControl Items="{Binding Tags}">
+              <ItemsControl Margin="0 5 0 0" Items="{Binding Tags}">
                 <ItemsControl.ItemTemplate>
                   <DataTemplate>
                     <Border Margin="3" Padding="3" CornerRadius="3" Background="{Binding Color}">
@@ -78,9 +78,10 @@
           </TabItem>
           <TabItem Header="Edit ✏️">
             <StackPanel HorizontalAlignment="Stretch">
-              <TextBlock Margin="5" Text="Information" />
-              <TextBox Margin="3" Watermark="Title" Text="{Binding Title}" />
-              <TextBox Margin="3" Watermark="Note" AcceptsReturn="True" TextWrapping="Wrap" Text="{Binding Text}" />
+              <TextBlock Margin="5" Text="Title" />
+              <TextBox Margin="3" Watermark="Enter title" Text="{Binding Title}" />
+              <TextBlock Margin="5" Text="Notes" />
+              <TextBox Margin="3" Watermark="Enter notes" AcceptsReturn="True" TextWrapping="Wrap" Text="{Binding Text}" />
               <TextBlock Margin="5" Text="Tasks" />
               <ItemsControl Items="{Binding Tasks}">
                 <ItemsControl.ItemTemplate>
@@ -140,7 +141,7 @@
             </StackPanel>
           </TabItem>
         </TabControl>
-      </DockPanel>
+      </Grid>
     </ScrollViewer>
   </Grid>
 </UserControl>
