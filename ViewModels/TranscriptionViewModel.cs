@@ -11,16 +11,15 @@ namespace JazzNotes.ViewModels
     public class TranscriptionViewModel : ViewModelBase
     {
         private readonly MainWindowViewModel mainViewModel;
-        private readonly Transcription transcription;
         private readonly PdfHelper pdfHelper;
-
-        private AvaloniaList<NotesEditorViewModel> noteVMs;
+        private readonly Transcription transcription;
         private AvaloniaList<Snip> additions;
-        private Bitmap image;
-        private bool showNotes, canEditNotes;
-        private Cursor currentCursor;
         private int clickMode;
+        private Cursor currentCursor;
+        private Bitmap image;
+        private AvaloniaList<NotesEditorViewModel> noteVMs;
         private Vector scrollPosition;
+        private bool showNotes, canEditNotes;
 
         /// <summary>
         /// Create new transcription viewmodel.
@@ -45,38 +44,6 @@ namespace JazzNotes.ViewModels
         }
 
         /// <summary>
-        /// Gets and sets the transcription name.
-        /// </summary>
-        public string TranscriptionName
-        {
-            get => this.transcription.Name;
-            set => this.transcription.Name = value;
-        }
-
-        /// <summary>
-        /// The current image for the transcription.
-        /// </summary>
-        public Bitmap Image
-        {
-            get => this.image;
-            set => this.RaiseAndSetIfChanged(ref this.image, value);
-        }
-
-        /// <summary>
-        /// The screen width.
-        /// </summary>
-        public double GridWidth => WindowHelper.MaxWidth;
-
-        /// <summary>
-        /// The notes viewmodels.
-        /// </summary>
-        public AvaloniaList<NotesEditorViewModel> NoteVMs
-        {
-            get => this.noteVMs;
-            set => this.RaiseAndSetIfChanged(ref this.noteVMs, value);
-        }
-
-        /// <summary>
         /// The list of additions.
         /// </summary>
         public AvaloniaList<Snip> Additions
@@ -88,28 +55,10 @@ namespace JazzNotes.ViewModels
         /// <summary>
         /// Whether notes should be shown or not.
         /// </summary>
-        public bool ShowNotes
-        {
-            get => this.showNotes;
-            set => this.RaiseAndSetIfChanged(ref this.showNotes, value);
-        }
-
-        /// <summary>
-        /// Whether notes should be shown or not.
-        /// </summary>
         public bool CanEditNotes
         {
             get => this.canEditNotes;
             set => this.RaiseAndSetIfChanged(ref this.canEditNotes, value);
-        }
-
-        /// <summary>
-        /// Gets and sets the current cursor.
-        /// </summary>
-        public Cursor CurrentCursor
-        {
-            get => this.currentCursor;
-            set => this.RaiseAndSetIfChanged(ref this.currentCursor, value);
         }
 
         /// <summary>
@@ -127,12 +76,62 @@ namespace JazzNotes.ViewModels
         }
 
         /// <summary>
+        /// Gets and sets the current cursor.
+        /// </summary>
+        public Cursor CurrentCursor
+        {
+            get => this.currentCursor;
+            set => this.RaiseAndSetIfChanged(ref this.currentCursor, value);
+        }
+
+        /// <summary>
+        /// The screen width.
+        /// </summary>
+        public double GridWidth => WindowHelper.MaxWidth;
+
+        /// <summary>
+        /// The current image for the transcription.
+        /// </summary>
+        public Bitmap Image
+        {
+            get => this.image;
+            set => this.RaiseAndSetIfChanged(ref this.image, value);
+        }
+
+        /// <summary>
+        /// The notes viewmodels.
+        /// </summary>
+        public AvaloniaList<NotesEditorViewModel> NoteVMs
+        {
+            get => this.noteVMs;
+            set => this.RaiseAndSetIfChanged(ref this.noteVMs, value);
+        }
+
+        /// <summary>
         /// The scroll position for the scrollviewer.
         /// </summary>
         public Vector ScrollPosition
         {
             get => this.scrollPosition;
             set => this.RaiseAndSetIfChanged(ref this.scrollPosition, value);
+        }
+
+        /// <summary>
+        /// Whether notes should be shown or not.
+        /// </summary>
+        public bool ShowNotes
+        {
+            get => this.showNotes;
+            set => this.RaiseAndSetIfChanged(ref this.showNotes, value);
+        }
+
+        /// <summary>
+        /// Gets and sets the transcription name.
+        /// </summary>
+        public string TranscriptionName
+        {
+            get => this.transcription.Name;
+            set => this.transcription.Name = value;
         }
 
         /// <summary>

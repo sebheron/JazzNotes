@@ -30,13 +30,13 @@ namespace JazzNotes.Models
         }
 
         /// <summary>
-        /// Name of the tag.
-        /// </summary>
-        public string Name { get; protected set; }
-
-        /// <summary>
         /// Gets the color of the tag, generated at creation.
         /// </summary>
         public ISolidColorBrush Color { get; }
+
+        /// <summary>
+        /// Name of the tag.
+        /// </summary>
+        public string Name { get; protected set; }
     }
 }

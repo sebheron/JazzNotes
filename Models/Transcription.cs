@@ -24,6 +24,16 @@ namespace JazzNotes.Models
         }
 
         /// <summary>
+        /// Gets the filepath for the transcription.
+        /// </summary>
+        public string FilePath { get; }
+
+        /// <summary>
+        /// The linker for the application.
+        /// </summary>
+        public Linker Linker { get; }
+
+        /// <summary>
         /// Name of the transcription.
         /// </summary>
         public string Name
@@ -37,19 +47,9 @@ namespace JazzNotes.Models
         }
 
         /// <summary>
-        /// Gets the filepath for the transcription.
-        /// </summary>
-        public string FilePath { get; }
-
-        /// <summary>
         /// The notes for the transcription.
         /// </summary>
         public AvaloniaList<Note> Notes { get; }
-
-        /// <summary>
-        /// The linker for the application.
-        /// </summary>
-        public Linker Linker { get; }
 
         /// <summary>
         /// Get the tags in the notes.

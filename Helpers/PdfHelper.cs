@@ -34,87 +34,24 @@ namespace JazzNotes.Helpers
         }
 
         /// <summary>
-        /// Show the new dialog.
+        /// The file path for the loaded image.
         /// </summary>
-        /// <returns>The path retrieved.</returns>
-        public async Task<string[]> ShowNewDialog()
-        {
-            OpenFileDialog myDialog = new OpenFileDialog()
-            {
-                Title = "Add New Transcription",
-                AllowMultiple = true
-            };
-            myDialog.Filters.Add(new FileDialogFilter() { Name = "Supported files", Extensions = new List<string> { "pdf", "png" } });
-
-            var result = await myDialog.ShowAsync(WindowHelper.MainWindow);
-
-            return result;
-        }
+        public string FilePath { get; private set; }
 
         /// <summary>
-        /// Show the add image dialog.
+        /// The height of the image.
         /// </summary>
-        /// <returns>The path retrieved.</returns>
-        public async Task<string> ShowAddImageDialog()
-        {
-            OpenFileDialog myDialog = new OpenFileDialog()
-            {
-                Title = "Add Image To Note",
-                AllowMultiple = false
-            };
-            myDialog.Filters.Add(new FileDialogFilter() { Name = "Image files (*.PNG)", Extensions = new List<string> { "png" } });
-
-            var result = await myDialog.ShowAsync(WindowHelper.MainWindow);
-
-            return result[0];
-        }
+        public double Height { get; private set; }
 
         /// <summary>
-        /// Load a pdf from path.
+        /// The loaded image.
         /// </summary>
-        /// <param name="path">The new image path.</param>
-        public void LoadPDF(string path)
-        {
-            var title = Path.GetFileNameWithoutExtension(path);
-            var newPath = Path.Combine(PathHelper.TranscriptionsDirectory, $"{title}.png");
+        public Bitmap Image { get; private set; }
 
-            int i = 0;
-            while (File.Exists(newPath))
-            {
-                newPath = Path.Combine(PathHelper.TranscriptionsDirectory, $"{title} {i}.png");
-                i++;
-            }
-
-            if (Path.GetExtension(path) == ".png")
-            {
-                using var loaded = new MagickImage(path);
-                loaded.Alpha(AlphaOption.Remove);
-                loaded.Write(newPath);
-                this.LoadImage(newPath);
-                return;
-            }
-
-            var settings = new MagickReadSettings()
-            {
-                Density = new Density(120)
-            };
-            using var collection = new MagickImageCollection();
-
-            collection.Read(path, settings);
-
-            using var vertical = collection.AppendVertically();
-
-            vertical.Alpha(AlphaOption.Remove);
-            vertical.Format = MagickFormat.Png;
-
-            this.Height = vertical.Height;
-            this.Width = vertical.Width;
-
-            vertical.Write(newPath);
-
-            this.FilePath = newPath;
-            this.Image = new Bitmap(newPath);
-        }
+        /// <summary>
+        /// The width of the image.
+        /// </summary>
+        public double Width { get; private set; }
 
         /// <summary>
         /// Appends a pdf (to the currently loaded image) from path.
@@ -169,46 +106,20 @@ namespace JazzNotes.Helpers
         }
 
         /// <summary>
-        /// Load an image from path.
+        /// Clean the image directory.
         /// </summary>
-        /// <param name="path">The path to the image.</param>
-        public void LoadImage(string path)
+        public void Clean()
         {
-            if (File.Exists(path))
+            this.Image = null;
+            imgPaths.Clear();
+            var paths = Directory.GetFiles(PathHelper.JazzNotesDirectory).Where(x => x.EndsWith(".png"));
+            foreach (var path in paths)
             {
-                this.FilePath = path;
-                this.Image = new Bitmap(path);
-                this.Height = this.Image.Size.Height;
-                this.Width = this.Image.Size.Width;
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                }
             }
-            else
-            {
-                var messageBoxStandardWindow = MessageBoxManager
-                    .GetMessageBoxStandardWindow("JazzNotes", "Image file is missing and cannot be loaded.");
-                messageBoxStandardWindow.Show();
-                this.Image = null;
-            }
-        }
-
-        /// <summary>
-        /// Load an external image and get it.
-        /// </summary>
-        /// <param name="path">The path to the image.</param>
-        /// <returns>The new path.</returns>
-        public string LoadExternalImage(string path)
-        {
-            var title = Path.GetFileNameWithoutExtension(path);
-            var newPath = Path.Combine(PathHelper.ImagesDirectory, title + ".png");
-
-            if (!File.Exists(newPath))
-            {
-                using IMagickImage loaded = new MagickImage(path);
-                loaded.Format = MagickFormat.Png;
-                loaded.Alpha(AlphaOption.Remove);
-                loaded.Write(newPath);
-            }
-
-            return newPath;
         }
 
         /// <summary>
@@ -246,40 +157,129 @@ namespace JazzNotes.Helpers
         }
 
         /// <summary>
-        /// Clean the image directory.
+        /// Load an external image and get it.
         /// </summary>
-        public void Clean()
+        /// <param name="path">The path to the image.</param>
+        /// <returns>The new path.</returns>
+        public string LoadExternalImage(string path)
         {
-            this.Image = null;
-            imgPaths.Clear();
-            var paths = Directory.GetFiles(PathHelper.JazzNotesDirectory).Where(x => x.EndsWith(".png"));
-            foreach (var path in paths)
+            var title = Path.GetFileNameWithoutExtension(path);
+            var newPath = Path.Combine(PathHelper.ImagesDirectory, title + ".png");
+
+            if (!File.Exists(newPath))
             {
-                if (File.Exists(path))
-                {
-                    File.Delete(path);
-                }
+                using IMagickImage loaded = new MagickImage(path);
+                loaded.Format = MagickFormat.Png;
+                loaded.Alpha(AlphaOption.Remove);
+                loaded.Write(newPath);
+            }
+
+            return newPath;
+        }
+
+        /// <summary>
+        /// Load an image from path.
+        /// </summary>
+        /// <param name="path">The path to the image.</param>
+        public void LoadImage(string path)
+        {
+            if (File.Exists(path))
+            {
+                this.FilePath = path;
+                this.Image = new Bitmap(path);
+                this.Height = this.Image.Size.Height;
+                this.Width = this.Image.Size.Width;
+            }
+            else
+            {
+                var messageBoxStandardWindow = MessageBoxManager
+                    .GetMessageBoxStandardWindow("JazzNotes", "Image file is missing and cannot be loaded.");
+                messageBoxStandardWindow.Show();
+                this.Image = null;
             }
         }
 
         /// <summary>
-        /// The loaded image.
+        /// Load a pdf from path.
         /// </summary>
-        public Bitmap Image { get; private set; }
+        /// <param name="path">The new image path.</param>
+        public void LoadPDF(string path)
+        {
+            var title = Path.GetFileNameWithoutExtension(path);
+            var newPath = Path.Combine(PathHelper.TranscriptionsDirectory, $"{title}.png");
+
+            int i = 0;
+            while (File.Exists(newPath))
+            {
+                newPath = Path.Combine(PathHelper.TranscriptionsDirectory, $"{title} {i}.png");
+                i++;
+            }
+
+            if (Path.GetExtension(path) == ".png")
+            {
+                using var loaded = new MagickImage(path);
+                loaded.Alpha(AlphaOption.Remove);
+                loaded.Write(newPath);
+                this.LoadImage(newPath);
+                return;
+            }
+
+            var settings = new MagickReadSettings()
+            {
+                Density = new Density(120)
+            };
+            using var collection = new MagickImageCollection();
+
+            collection.Read(path, settings);
+
+            using var vertical = collection.AppendVertically();
+
+            vertical.Alpha(AlphaOption.Remove);
+            vertical.Format = MagickFormat.Png;
+
+            this.Height = vertical.Height;
+            this.Width = vertical.Width;
+
+            vertical.Write(newPath);
+
+            this.FilePath = newPath;
+            this.Image = new Bitmap(newPath);
+        }
 
         /// <summary>
-        /// The width of the image.
+        /// Show the add image dialog.
         /// </summary>
-        public double Width { get; private set; }
+        /// <returns>The path retrieved.</returns>
+        public async Task<string> ShowAddImageDialog()
+        {
+            OpenFileDialog myDialog = new OpenFileDialog()
+            {
+                Title = "Add Image To Note",
+                AllowMultiple = false
+            };
+            myDialog.Filters.Add(new FileDialogFilter() { Name = "Image files (*.PNG)", Extensions = new List<string> { "png" } });
+
+            var result = await myDialog.ShowAsync(WindowHelper.MainWindow);
+
+            return result[0];
+        }
 
         /// <summary>
-        /// The height of the image.
+        /// Show the new dialog.
         /// </summary>
-        public double Height { get; private set; }
+        /// <returns>The path retrieved.</returns>
+        public async Task<string[]> ShowNewDialog()
+        {
+            OpenFileDialog myDialog = new OpenFileDialog()
+            {
+                Title = "Add New Transcription",
+                AllowMultiple = true
+            };
+            myDialog.Filters.Add(new FileDialogFilter() { Name = "Supported files", Extensions = new List<string> { "pdf", "png" } });
 
-        /// <summary>
-        /// The file path for the loaded image.
-        /// </summary>
-        public string FilePath { get; private set; }
+            var result = await myDialog.ShowAsync(WindowHelper.MainWindow);
+
+            return result;
+        }
     }
 }

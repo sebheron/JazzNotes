@@ -7,9 +7,9 @@ namespace JazzNotes.ViewModels
 {
     public class StartupViewModel : ViewModelBase
     {
-        private int selectedIndex;
-        private string search;
         private readonly Linker linker;
+        private string search;
+        private int selectedIndex;
 
         /// <summary>
         /// The inital startup viewmodel.
@@ -20,6 +20,12 @@ namespace JazzNotes.ViewModels
             this.linker = linker;
             this.Tags = new AvaloniaList<Tag>();
         }
+
+        /// <summary>
+        /// Gets all the tags for autocomplete.
+        /// </summary>
+        public AvaloniaList<string> AutoCompleteItems => new AvaloniaList<string>(this.linker.AllTags
+            .Where(x => !this.Tags.Contains(x)).Select(x => x.Name));
 
         /// <summary>
         /// The list of notes to display.
@@ -56,36 +62,36 @@ namespace JazzNotes.ViewModels
         }
 
         /// <summary>
-        /// The list of transcriptions to display.
+        /// The count for notes.
         /// </summary>
-        public AvaloniaList<Transcription> TranscriptionItems
+        public string NotesCount => $"Notes: {this.NoteItems.Count}";
+
+        /// <summary>
+        /// The search query.
+        /// </summary>
+        public string Search
         {
-            get
+            get => this.search;
+            set
             {
-                if (this.Tags.Count > 0)
-                {
-                    var transcriptions = new AvaloniaList<Transcription>();
-                    var tagCount = 0;
-
-                    foreach (var transcription in this.linker.Transcriptions)
-                    {
-                        foreach (var tag in this.Tags)
-                        {
-                            if (!transcription.Tags.Contains(tag)) continue;
-                            tagCount++;
-                        }
-                        if (tagCount == this.Tags.Count)
-                        {
-                            transcriptions.Add(transcription);
-                        }
-                        tagCount = 0;
-                    }
-                    return transcriptions;
-                }
-
-                return this.linker.Transcriptions;
+                this.RaiseAndSetIfChanged(ref this.search, value);
+                this.RaiseListChanged();
             }
         }
+
+        /// <summary>
+        /// The selected tab index.
+        /// </summary>
+        public int SelectedIndex
+        {
+            get => this.selectedIndex;
+            set => this.RaiseAndSetIfChanged(ref this.selectedIndex, value);
+        }
+
+        /// <summary>
+        /// Tags to search for.
+        /// </summary>
+        public AvaloniaList<Tag> Tags { get; }
 
         /// <summary>
         /// The list of tasks to display.
@@ -120,59 +126,41 @@ namespace JazzNotes.ViewModels
         }
 
         /// <summary>
-        /// Gets all the tags for autocomplete.
+        /// The list of transcriptions to display.
         /// </summary>
-        public AvaloniaList<string> AutoCompleteItems => new AvaloniaList<string>(this.linker.AllTags
-            .Where(x => !this.Tags.Contains(x)).Select(x => x.Name));
-
-        /// <summary>
-        /// Tags to search for.
-        /// </summary>
-        public AvaloniaList<Tag> Tags { get; }
-
-        /// <summary>
-        /// The search query.
-        /// </summary>
-        public string Search
+        public AvaloniaList<Transcription> TranscriptionItems
         {
-            get => this.search;
-            set
+            get
             {
-                this.RaiseAndSetIfChanged(ref this.search, value);
-                this.RaiseListChanged();
+                if (this.Tags.Count > 0)
+                {
+                    var transcriptions = new AvaloniaList<Transcription>();
+                    var tagCount = 0;
+
+                    foreach (var transcription in this.linker.Transcriptions)
+                    {
+                        foreach (var tag in this.Tags)
+                        {
+                            if (!transcription.Tags.Contains(tag)) continue;
+                            tagCount++;
+                        }
+                        if (tagCount == this.Tags.Count)
+                        {
+                            transcriptions.Add(transcription);
+                        }
+                        tagCount = 0;
+                    }
+                    return transcriptions;
+                }
+
+                return this.linker.Transcriptions;
             }
         }
-
-        /// <summary>
-        /// The selected tab index.
-        /// </summary>
-        public int SelectedIndex
-        {
-            get => this.selectedIndex;
-            set => this.RaiseAndSetIfChanged(ref this.selectedIndex, value);
-        }
-
-        /// <summary>
-        /// The count for notes.
-        /// </summary>
-        public string NotesCount => $"Notes: {this.NoteItems.Count}";
 
         /// <summary>
         /// The count for items.
         /// </summary>
         public string TranscriptionsCount => $"Transcriptions: {this.TranscriptionItems.Count}";
-
-        /// <summary>
-        /// Raises that the lists have been changed.
-        /// </summary>
-        public void RaiseListChanged()
-        {
-            this.RaisePropertyChanged(nameof(this.NoteItems));
-            this.RaisePropertyChanged(nameof(this.NotesCount));
-            this.RaisePropertyChanged(nameof(this.TranscriptionItems));
-            this.RaisePropertyChanged(nameof(this.TranscriptionsCount));
-            this.RaisePropertyChanged(nameof(this.AutoCompleteItems));
-        }
 
         /// <summary>
         /// Add a tag to search.
@@ -189,6 +177,18 @@ namespace JazzNotes.ViewModels
                 return true;
             }
             return false;
+        }
+
+        /// <summary>
+        /// Raises that the lists have been changed.
+        /// </summary>
+        public void RaiseListChanged()
+        {
+            this.RaisePropertyChanged(nameof(this.NoteItems));
+            this.RaisePropertyChanged(nameof(this.NotesCount));
+            this.RaisePropertyChanged(nameof(this.TranscriptionItems));
+            this.RaisePropertyChanged(nameof(this.TranscriptionsCount));
+            this.RaisePropertyChanged(nameof(this.AutoCompleteItems));
         }
 
         /// <summary>

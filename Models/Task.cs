@@ -25,11 +25,6 @@ namespace JazzNotes.Models
         }
 
         /// <summary>
-        /// Name of the task.
-        /// </summary>
-        public string Name { get; protected set; }
-
-        /// <summary>
         /// Whether the task is checked or not.
         /// </summary>
         public bool Checked
@@ -46,5 +41,10 @@ namespace JazzNotes.Models
         /// The display string.
         /// </summary>
         public string Display => $"• {this.Name} " + (this.Checked ? "✅" : string.Empty);
+
+        /// <summary>
+        /// Name of the task.
+        /// </summary>
+        public string Name { get; protected set; }
     }
 }

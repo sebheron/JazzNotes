@@ -61,40 +61,19 @@ namespace JazzNotes.Models
         }
 
         /// <summary>
+        /// The color for the note.
+        /// </summary>
+        public SolidColorBrush Color { get; }
+
+        /// <summary>
         /// The id for the note.
         /// </summary>
         public Guid ID { get; }
 
         /// <summary>
-        /// Gets and sets the title of the note.
+        /// The list of bitmaps.
         /// </summary>
-        public string Title
-        {
-            get => this.title;
-            set
-            {
-                this.title = value;
-                FileHelper.SaveLinker();
-            }
-        }
-
-        /// <summary>
-        /// Gets and sets the content of the note.
-        /// </summary>
-        public string Text
-        {
-            get => this.text;
-            set
-            {
-                this.text = value;
-                FileHelper.SaveLinker();
-            }
-        }
-
-        /// <summary>
-        /// The transcription the note is for.
-        /// </summary>
-        public Transcription Transcription { get; }
+        public AvaloniaList<ImageContainer> Images { get; protected set; }
 
         /// <summary>
         /// The list of snips for the note.
@@ -112,14 +91,70 @@ namespace JazzNotes.Models
         public AvaloniaList<Task> Tasks { get; protected set; }
 
         /// <summary>
-        /// The list of bitmaps.
+        /// Gets and sets the content of the note.
         /// </summary>
-        public AvaloniaList<ImageContainer> Images { get; protected set; }
+        public string Text
+        {
+            get => this.text;
+            set
+            {
+                this.text = value;
+                FileHelper.SaveLinker();
+            }
+        }
 
         /// <summary>
-        /// The color for the note.
+        /// Gets and sets the title of the note.
         /// </summary>
-        public SolidColorBrush Color { get; }
+        public string Title
+        {
+            get => this.title;
+            set
+            {
+                this.title = value;
+                FileHelper.SaveLinker();
+            }
+        }
+
+        /// <summary>
+        /// The transcription the note is for.
+        /// </summary>
+        public Transcription Transcription { get; }
+
+        /// <summary>
+        /// Add an image.
+        /// </summary>
+        /// <param name="path">Path to the image.</param>
+        public void AddImage(string path, string name)
+        {
+            var image = new ImageContainer(path, name);
+            this.Images.Add(image);
+        }
+
+        /// <summary>
+        /// Add a snip.
+        /// </summary>
+        /// <param name="snip">The snip.</param>
+        public void AddSnip(Snip snip)
+        {
+            this.Snips.Add(snip);
+        }
+
+        /// <summary>
+        /// Add a new tag to the note.
+        /// </summary>
+        /// <param name="name">Name of tag.</param>
+        /// <returns>Whether the tag was added or not.</returns>
+        public bool AddTag(string name)
+        {
+            var tag = new Tag(name);
+            var contains = this.Tags.Any(x => x.Name == name);
+            if (!contains)
+            {
+                this.Tags.Add(this.Transcription.Linker.GetOrAddTag(name));
+            }
+            return !contains;
+        }
 
         /// <summary>
         /// Add a new task to the note.
@@ -143,28 +178,15 @@ namespace JazzNotes.Models
         }
 
         /// <summary>
-        /// Removes a task from the note.
+        /// Removes an image.
         /// </summary>
-        /// <param name="task">The task to be removed.</param>
-        public void RemoveTask(Task task)
+        public void RemoveImage(ImageContainer image)
         {
-            this.Tasks.Remove(task);
-        }
-
-        /// <summary>
-        /// Add a new tag to the note.
-        /// </summary>
-        /// <param name="name">Name of tag.</param>
-        /// <returns>Whether the tag was added or not.</returns>
-        public bool AddTag(string name)
-        {
-            var tag = new Tag(name);
-            var contains = this.Tags.Any(x => x.Name == name);
-            if (!contains)
+            if (File.Exists(image.FilePath) && !Transcription.Linker.IsImageInUse(image))
             {
-                this.Tags.Add(this.Transcription.Linker.GetOrAddTag(name));
+                File.Delete(image.FilePath);
             }
-            return !contains;
+            this.Images.Remove(image);
         }
 
         /// <summary>
@@ -178,34 +200,12 @@ namespace JazzNotes.Models
         }
 
         /// <summary>
-        /// Add an image.
+        /// Removes a task from the note.
         /// </summary>
-        /// <param name="path">Path to the image.</param>
-        public void AddImage(string path, string name)
+        /// <param name="task">The task to be removed.</param>
+        public void RemoveTask(Task task)
         {
-            var image = new ImageContainer(path, name);
-            this.Images.Add(image);
-        }
-
-        /// <summary>
-        /// Removes an image.
-        /// </summary>
-        public void RemoveImage(ImageContainer image)
-        {
-            if (File.Exists(image.FilePath) && !Transcription.Linker.IsImageInUse(image))
-            {
-                File.Delete(image.FilePath);
-            }
-            this.Images.Remove(image);
-        }
-
-        /// <summary>
-        /// Add a snip.
-        /// </summary>
-        /// <param name="snip">The snip.</param>
-        public void AddSnip(Snip snip)
-        {
-            this.Snips.Add(snip);
+            this.Tasks.Remove(task);
         }
     }
 }

@@ -15,6 +15,11 @@ namespace JazzNotes.Models
         }
 
         /// <summary>
+        /// The margin of the snip.
+        /// </summary>
+        public Thickness Margin { get; }
+
+        /// <summary>
         /// The width of the snip.
         /// </summary>
         public Rect Rect { get; }
@@ -23,10 +28,5 @@ namespace JazzNotes.Models
         /// The height of the snip.
         /// </summary>
         public Size Size { get; }
-
-        /// <summary>
-        /// The margin of the snip.
-        /// </summary>
-        public Thickness Margin { get; }
     }
 }

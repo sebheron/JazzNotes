@@ -30,56 +30,6 @@ namespace JazzNotes.ViewModels
         }
 
         /// <summary>
-        /// The id.
-        /// </summary>
-        public Guid ID => this.note.ID;
-
-        /// <summary>
-        /// The height.
-        /// </summary>
-        public double Height => this.note.Snips[0].Size.Height;
-
-        /// <summary>
-        /// The width.
-        /// </summary>
-        public double Width => this.note.Snips[0].Size.Width;
-
-        /// <summary>
-        /// The margin.
-        /// </summary>
-        public Thickness Margin => this.note.Snips[0].Margin;
-
-        /// <summary>
-        /// The display title.
-        /// </summary>
-        public string DisplayTitle => this.note.Snips.Count > 1 ? "..." : string.Empty;
-
-        /// <summary>
-        /// The transcription name.
-        /// </summary>
-        public string TranscriptionName => this.note.Transcription.Name;
-
-        /// <summary>
-        /// The transcription for the note.
-        /// </summary>
-        public Transcription Transcription => this.note.Transcription;
-
-        /// <summary>
-        /// Tags for the note.
-        /// </summary>
-        public AvaloniaList<Tag> Tags => this.note.Tags;
-
-        /// <summary>
-        /// Tags for the note.
-        /// </summary>
-        public AvaloniaList<Task> Tasks => this.note.Tasks;
-
-        /// <summary>
-        /// Images for the note.
-        /// </summary>
-        public AvaloniaList<ImageContainer> Images => this.note.Images;
-
-        /// <summary>
         /// Gets all the tags for autocomplete.
         /// </summary>
         public AvaloniaList<string> AutoCompleteItems => new AvaloniaList<string>(this.note.Transcription.Linker.AllTags
@@ -91,9 +41,34 @@ namespace JazzNotes.ViewModels
         public SolidColorBrush Color => this.note.Color;
 
         /// <summary>
+        /// The display title.
+        /// </summary>
+        public string DisplayTitle => this.note.Snips.Count > 1 ? "..." : string.Empty;
+
+        /// <summary>
+        /// The height.
+        /// </summary>
+        public double Height => this.note.Snips[0].Size.Height;
+
+        /// <summary>
+        /// The id.
+        /// </summary>
+        public Guid ID => this.note.ID;
+
+        /// <summary>
         /// The image for the note.
         /// </summary>
         public Bitmap Image { get; set; }
+
+        /// <summary>
+        /// Images for the note.
+        /// </summary>
+        public AvaloniaList<ImageContainer> Images => this.note.Images;
+
+        /// <summary>
+        /// The margin.
+        /// </summary>
+        public Thickness Margin => this.note.Snips[0].Margin;
 
         /// <summary>
         /// Whether the note is to be shown or not.
@@ -101,17 +76,14 @@ namespace JazzNotes.ViewModels
         public bool Shown { get; set; }
 
         /// <summary>
-        /// The title for the note.
+        /// Tags for the note.
         /// </summary>
-        public string Title
-        {
-            get => this.note.Title;
-            set
-            {
-                this.note.Title = value;
-                this.RaisePropertyChanged(nameof(this.Title));
-            }
-        }
+        public AvaloniaList<Tag> Tags => this.note.Tags;
+
+        /// <summary>
+        /// Tags for the note.
+        /// </summary>
+        public AvaloniaList<Task> Tasks => this.note.Tasks;
 
         /// <summary>
         /// The text for the note.
@@ -127,20 +99,42 @@ namespace JazzNotes.ViewModels
         }
 
         /// <summary>
-        /// Add a new task to the note.
+        /// The title for the note.
         /// </summary>
-        /// <param name="name">Name of task.</param>
-        public void AddTask(string name)
+        public string Title
         {
-            this.note.AddTask(name);
+            get => this.note.Title;
+            set
+            {
+                this.note.Title = value;
+                this.RaisePropertyChanged(nameof(this.Title));
+            }
         }
 
         /// <summary>
-        /// Remove a task.
+        /// The transcription for the note.
         /// </summary>
-        public void RemoveTask(Task task)
+        public Transcription Transcription => this.note.Transcription;
+
+        /// <summary>
+        /// The transcription name.
+        /// </summary>
+        public string TranscriptionName => this.note.Transcription.Name;
+
+        /// <summary>
+        /// The width.
+        /// </summary>
+        public double Width => this.note.Snips[0].Size.Width;
+
+        /// <summary>
+        /// Adds an image.
+        /// </summary>
+        public async void AddImage()
         {
-            this.note.RemoveTask(task);
+            var path = await pdfHelper.ShowAddImageDialog();
+            if (string.IsNullOrEmpty(path)) return;
+            var newPath = pdfHelper.LoadExternalImage(path);
+            this.note.AddImage(newPath, Path.GetFileNameWithoutExtension(path));
         }
 
         /// <summary>
@@ -156,12 +150,12 @@ namespace JazzNotes.ViewModels
         }
 
         /// <summary>
-        /// Remove a tag.
+        /// Add a new task to the note.
         /// </summary>
-        public void RemoveTag(Tag tag)
+        /// <param name="name">Name of task.</param>
+        public void AddTask(string name)
         {
-            this.note.RemoveTag(tag);
-            this.RaisePropertyChanged(nameof(this.AutoCompleteItems));
+            this.note.AddTask(name);
         }
 
         /// <summary>
@@ -178,22 +172,28 @@ namespace JazzNotes.ViewModels
         }
 
         /// <summary>
-        /// Adds an image.
-        /// </summary>
-        public async void AddImage()
-        {
-            var path = await pdfHelper.ShowAddImageDialog();
-            if (string.IsNullOrEmpty(path)) return;
-            var newPath = pdfHelper.LoadExternalImage(path);
-            this.note.AddImage(newPath, Path.GetFileNameWithoutExtension(path));
-        }
-
-        /// <summary>
         /// Deletes an image.
         /// </summary>
         public void RemoveImage(ImageContainer image)
         {
             this.note.RemoveImage(image);
+        }
+
+        /// <summary>
+        /// Remove a tag.
+        /// </summary>
+        public void RemoveTag(Tag tag)
+        {
+            this.note.RemoveTag(tag);
+            this.RaisePropertyChanged(nameof(this.AutoCompleteItems));
+        }
+
+        /// <summary>
+        /// Remove a task.
+        /// </summary>
+        public void RemoveTask(Task task)
+        {
+            this.note.RemoveTask(task);
         }
     }
 }

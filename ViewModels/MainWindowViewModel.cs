@@ -27,40 +27,72 @@ namespace JazzNotes.ViewModels
         }
 
         /// <summary>
-        /// Create new transcription from file.
+        /// The current displayed viewmodel.
         /// </summary>
-        public async void NewTranscription()
+        public ViewModelBase Content
         {
-            try
+            get => this.content;
+            set => this.RaiseAndSetIfChanged(ref this.content, value);
+        }
+
+        /// <summary>
+        /// The linker for the entire application.
+        /// </summary>
+        public Linker Linker { get; }
+
+        /// <summary>
+        /// Sets the loaded files.
+        /// </summary>
+        public string[] LoadedFiles
+        {
+            set
             {
-                this.LoadedFiles = await this.PdfHelper.ShowNewDialog();
-            }
-            catch
-            {
-                Debug.WriteLine("Error occured showing/closing OpenFileDialog.");
+                this.LoadSelectedFile(value[0]);
+                if (value.Length > 1)
+                {
+                    for (int i = 1; i < value.Length; i++)
+                    {
+                        this.AppendSelectedFile(value[i]);
+                    }
+                }
+                this.OpenLoadedFile();
             }
         }
 
         /// <summary>
-        /// Open a note.
+        /// The pdf helper for the entire application.
         /// </summary>
-        /// <param name="note">The note to open.</param>
-        public void OpenNote(Note note)
+        public PdfHelper PdfHelper { get; }
+
+        /// <summary>
+        /// The startup viewmodel.
+        /// </summary>
+        public StartupViewModel StartupVM { get; }
+
+        /// <summary>
+        /// The current transcription viewmodel.
+        /// </summary>
+        public TranscriptionViewModel TranscriptionVM { get; set; }
+
+        /// <summary>
+        /// Adds a note to the tasks list.
+        /// </summary>
+        /// <param name="note">The note to add.</param>
+        public void AddNoteToTasks(Note note)
         {
-            this.LoadSelectedInternalFile(note.Transcription.FilePath);
-            this.OpenLoadedFile();
-            this.Content = this.TranscriptionVM.GetNoteViewModel(note);
-            this.TranscriptionVM = null;
+            var taskNote = new TaskNote(note);
+            this.Linker.Tasks.Add(taskNote);
+            this.StartupVM.SelectedIndex = 2;
         }
 
         /// <summary>
-        /// Open a transcription.
+        /// Appends the selected file.
         /// </summary>
-        /// <param name="transcription">The transcription to open.</param>
-        public void OpenTranscription(Transcription transcription)
+        /// <param name="path">Selected file.</param>
+        public void AppendSelectedFile(string path)
         {
-            this.LoadSelectedInternalFile(transcription.FilePath);
-            this.OpenLoadedFile();
+            if (String.IsNullOrEmpty(path)) return;
+            this.PdfHelper.AppendPDF(path);
         }
 
         /// <summary>
@@ -85,6 +117,24 @@ namespace JazzNotes.ViewModels
                 return true;
             }
             return false;
+        }
+
+        /// <summary>
+        /// Deletes a task.
+        /// </summary>
+        /// <param name="task">The task to delete.</param>
+        public async void DeleteTask(TaskNote task)
+        {
+            var name = task.Note.Title.Length > 20 ? task.Note.Title.Substring(0, 20) + "..." : task.Note.Title;
+            var messageBoxStandardWindow = MessageBoxManager
+                    .GetMessageBoxStandardWindow("JazzNotes", $"Are you sure you want to remove the task for note: {name}?", ButtonEnum.YesNo);
+            var delete = await messageBoxStandardWindow.ShowDialog(WindowHelper.MainWindow);
+
+            if (delete == ButtonResult.Yes)
+            {
+                this.Linker.Tasks.Remove(task);
+                this.StartupVM.RaiseListChanged();
+            }
         }
 
         /// <summary>
@@ -118,32 +168,12 @@ namespace JazzNotes.ViewModels
         }
 
         /// <summary>
-        /// Adds a note to the tasks list.
+        /// Go back to the startup.
         /// </summary>
-        /// <param name="note">The note to add.</param>
-        public void AddNoteToTasks(Note note)
+        public void GoBackToStartup()
         {
-            var taskNote = new TaskNote(note);
-            this.Linker.Tasks.Add(taskNote);
-            this.StartupVM.SelectedIndex = 2;
-        }
-
-        /// <summary>
-        /// Deletes a task.
-        /// </summary>
-        /// <param name="task">The task to delete.</param>
-        public async void DeleteTask(TaskNote task)
-        {
-            var name = task.Note.Title.Length > 20 ? task.Note.Title.Substring(0, 20) + "..." : task.Note.Title;
-            var messageBoxStandardWindow = MessageBoxManager
-                    .GetMessageBoxStandardWindow("JazzNotes", $"Are you sure you want to remove the task for note: {name}?", ButtonEnum.YesNo);
-            var delete = await messageBoxStandardWindow.ShowDialog(WindowHelper.MainWindow);
-
-            if (delete == ButtonResult.Yes)
-            {
-                this.Linker.Tasks.Remove(task);
-                this.StartupVM.RaiseListChanged();
-            }
+            this.Content = this.StartupVM;
+            this.TranscriptionVM = null;
         }
 
         /// <summary>
@@ -164,21 +194,15 @@ namespace JazzNotes.ViewModels
         }
 
         /// <summary>
-        /// Go back to the startup.
+        /// Loads the selected file.
         /// </summary>
-        public void GoBackToStartup()
+        /// <param name="path">Selected file.</param>
+        public void LoadSelectedFile(string path)
         {
-            this.Content = this.StartupVM;
-            this.TranscriptionVM = null;
-        }
+            if (String.IsNullOrEmpty(path)) return;
 
-        /// <summary>
-        /// The current displayed viewmodel.
-        /// </summary>
-        public ViewModelBase Content
-        {
-            get => this.content;
-            set => this.RaiseAndSetIfChanged(ref this.content, value);
+            this.PdfHelper.Clean();
+            this.PdfHelper.LoadPDF(path);
         }
 
         /// <summary>
@@ -194,25 +218,18 @@ namespace JazzNotes.ViewModels
         }
 
         /// <summary>
-        /// Loads the selected file.
+        /// Create new transcription from file.
         /// </summary>
-        /// <param name="path">Selected file.</param>
-        public void LoadSelectedFile(string path)
+        public async void NewTranscription()
         {
-            if (String.IsNullOrEmpty(path)) return;
-
-            this.PdfHelper.Clean();
-            this.PdfHelper.LoadPDF(path);
-        }
-
-        /// <summary>
-        /// Appends the selected file.
-        /// </summary>
-        /// <param name="path">Selected file.</param>
-        public void AppendSelectedFile(string path)
-        {
-            if (String.IsNullOrEmpty(path)) return;
-            this.PdfHelper.AppendPDF(path);
+            try
+            {
+                this.LoadedFiles = await this.PdfHelper.ShowNewDialog();
+            }
+            catch
+            {
+                Debug.WriteLine("Error occured showing/closing OpenFileDialog.");
+            }
         }
 
         /// <summary>
@@ -235,42 +252,25 @@ namespace JazzNotes.ViewModels
         }
 
         /// <summary>
-        /// Sets the loaded files.
+        /// Open a note.
         /// </summary>
-        public string[] LoadedFiles
+        /// <param name="note">The note to open.</param>
+        public void OpenNote(Note note)
         {
-            set
-            {
-                this.LoadSelectedFile(value[0]);
-                if (value.Length > 1)
-                {
-                    for (int i = 1; i < value.Length; i++)
-                    {
-                        this.AppendSelectedFile(value[i]);
-                    }
-                }
-                this.OpenLoadedFile();
-            }
+            this.LoadSelectedInternalFile(note.Transcription.FilePath);
+            this.OpenLoadedFile();
+            this.Content = this.TranscriptionVM.GetNoteViewModel(note);
+            this.TranscriptionVM = null;
         }
 
         /// <summary>
-        /// The startup viewmodel.
+        /// Open a transcription.
         /// </summary>
-        public StartupViewModel StartupVM { get; }
-
-        /// <summary>
-        /// The current transcription viewmodel.
-        /// </summary>
-        public TranscriptionViewModel TranscriptionVM { get; set; }
-
-        /// <summary>
-        /// The linker for the entire application.
-        /// </summary>
-        public Linker Linker { get; }
-
-        /// <summary>
-        /// The pdf helper for the entire application.
-        /// </summary>
-        public PdfHelper PdfHelper { get; }
+        /// <param name="transcription">The transcription to open.</param>
+        public void OpenTranscription(Transcription transcription)
+        {
+            this.LoadSelectedInternalFile(transcription.FilePath);
+            this.OpenLoadedFile();
+        }
     }
 }

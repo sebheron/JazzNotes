@@ -25,11 +25,6 @@ namespace JazzNotes.Models
         }
 
         /// <summary>
-        /// The note.
-        /// </summary>
-        public Note Note { get; }
-
-        /// <summary>
         /// Whether the task note is checked or not.
         /// </summary>
         public bool Checked
@@ -41,5 +36,10 @@ namespace JazzNotes.Models
                 FileHelper.SaveLinker();
             }
         }
+
+        /// <summary>
+        /// The note.
+        /// </summary>
+        public Note Note { get; }
     }
 }

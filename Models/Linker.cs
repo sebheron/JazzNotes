@@ -9,6 +9,11 @@ namespace JazzNotes.Models
     public class Linker
     {
         /// <summary>
+        /// Gets all tags for all notes and transcriptions.
+        /// </summary>
+        public readonly AvaloniaList<Tag> AllTags;
+
+        /// <summary>
         /// Create new linker
         /// </summary>
         public Linker()
@@ -33,20 +38,6 @@ namespace JazzNotes.Models
         public AvaloniaList<Transcription> Transcriptions { get; }
 
         /// <summary>
-        /// Gets all tags for all notes and transcriptions.
-        /// </summary>
-        public readonly AvaloniaList<Tag> AllTags;
-
-        /// <summary>
-        /// Gets a tag by name.
-        /// </summary>
-        /// <returns></returns>
-        public Tag GetTag(string name)
-        {
-            return this.AllTags.FirstOrDefault(x => x.Name == name);
-        }
-
-        /// <summary>
         /// Gets or adds a new tag.
         /// </summary>
         /// <param name="name">Name of tag.</param>
@@ -63,19 +54,6 @@ namespace JazzNotes.Models
         }
 
         /// <summary>
-        /// Remove a tag if its no longer being used by any notes.
-        /// </summary>
-        /// <param name="tag">The tag to remove.</param>
-        public void RemoveTagIfNotInuse(Tag tag)
-        {
-            var allTagsComplete = this.Transcriptions.SelectMany(x => x.Notes).SelectMany(x => x.Tags);
-            if (!allTagsComplete.Contains(tag))
-            {
-                this.AllTags.Remove(tag);
-            }
-        }
-
-        /// <summary>
         /// Gets or adds a transcription.
         /// </summary>
         /// <param name="filePath">Filepath for transcription.</param>
@@ -89,6 +67,15 @@ namespace JazzNotes.Models
                 this.Transcriptions.Add(getTranscription);
             }
             return getTranscription;
+        }
+
+        /// <summary>
+        /// Gets a tag by name.
+        /// </summary>
+        /// <returns></returns>
+        public Tag GetTag(string name)
+        {
+            return this.AllTags.FirstOrDefault(x => x.Name == name);
         }
 
         /// <summary>
@@ -110,6 +97,19 @@ namespace JazzNotes.Models
         public bool IsImageInUse(ImageContainer imageContainer)
         {
             return this.Transcriptions.SelectMany(x => x.Notes).SelectMany(x => x.Images).Any(x => x.FilePath == imageContainer.FilePath);
+        }
+
+        /// <summary>
+        /// Remove a tag if its no longer being used by any notes.
+        /// </summary>
+        /// <param name="tag">The tag to remove.</param>
+        public void RemoveTagIfNotInuse(Tag tag)
+        {
+            var allTagsComplete = this.Transcriptions.SelectMany(x => x.Notes).SelectMany(x => x.Tags);
+            if (!allTagsComplete.Contains(tag))
+            {
+                this.AllTags.Remove(tag);
+            }
         }
     }
 }
