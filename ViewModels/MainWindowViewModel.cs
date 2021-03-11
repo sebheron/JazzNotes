@@ -244,7 +244,8 @@ namespace JazzNotes.ViewModels
                 this.LoadSelectedFile(value[0]);
                 if (value.Length > 1)
                 {
-                    for (int i = 1; i < value.Length; i++){
+                    for (int i = 1; i < value.Length; i++)
+                    {
                         this.AppendSelectedFile(value[i]);
                     }
                 }

@@ -1,6 +1,6 @@
-﻿using ReactiveUI;
-using Avalonia.Media.Imaging;
+﻿using Avalonia.Media.Imaging;
 using JazzNotes.Helpers;
+using ReactiveUI;
 
 namespace JazzNotes.Models
 {

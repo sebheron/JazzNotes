@@ -1,10 +1,8 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using JazzNotes.Helpers;
 using JazzNotes.ViewModels;
 using System;
-using System.ComponentModel;
 using System.Runtime.InteropServices;
 
 namespace JazzNotes.Views

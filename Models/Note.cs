@@ -1,5 +1,4 @@
-﻿using Avalonia;
-using Avalonia.Collections;
+﻿using Avalonia.Collections;
 using Avalonia.Media;
 using JazzNotes.Helpers;
 using System;
@@ -191,7 +190,6 @@ namespace JazzNotes.Models
         /// <summary>
         /// Removes an image.
         /// </summary>
-        /// <param name="bitmap">The image to remove.</param>
         public void RemoveImage(ImageContainer image)
         {
             if (File.Exists(image.FilePath) && !Transcription.Linker.IsImageInUse(image))

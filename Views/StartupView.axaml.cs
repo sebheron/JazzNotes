@@ -1,7 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
-using JazzNotes.Models;
 using JazzNotes.ViewModels;
 
 namespace JazzNotes.Views

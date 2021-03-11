@@ -5,7 +5,6 @@ using Avalonia.Media.Imaging;
 using JazzNotes.Helpers;
 using JazzNotes.Models;
 using ReactiveUI;
-using System.Linq;
 
 namespace JazzNotes.ViewModels
 {
@@ -175,7 +174,6 @@ namespace JazzNotes.ViewModels
         /// <summary>
         /// The note to delete.
         /// </summary>
-        /// <param name="sender">The note</param>
         public void DeleteNote(NotesEditorViewModel vm)
         {
             this.NoteVMs.Remove(vm);
