@@ -48,8 +48,8 @@
                   <DataTemplate>
                     <Border DockPanel.Dock="Top" Margin="5" BorderBrush="Gray" BorderThickness="1" HorizontalAlignment="Stretch">
                       <StackPanel>
-                        <TextBlock Text="{Binding Name}" />
-                        <Image DoubleTapped="OpenImageInViewer" Source="{Binding Image}" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MaxHeight="400" />
+                        <TextBlock Text="{Binding Name}" FontStyle="Oblique" FontSize="25" Margin="3" HorizontalAlignment="Center" />
+                        <Image Margin="0 5 0 0" DoubleTapped="OpenImageInViewer" Source="{Binding Image}" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MaxHeight="400" />
                       </StackPanel>
                     </Border>
                   </DataTemplate>
@@ -76,7 +76,7 @@
               </ItemsControl>
             </StackPanel>
           </TabItem>
-          <TabItem Header="Edit ✏️">
+          <TabItem Header="Edit 📝">
             <StackPanel HorizontalAlignment="Stretch">
               <TextBlock Margin="5" Text="Title" />
               <TextBox Margin="3" Watermark="Enter title" Text="{Binding Title}" />

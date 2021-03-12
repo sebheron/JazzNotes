@@ -182,20 +182,13 @@ namespace JazzNotes.Helpers
                         foreach (var task in tasks.Elements())
                         {
                             var id = task.Attribute("id");
-                            var check = task.Attribute("check");
 
                             if (id == null) continue;
-
-                            var checkValue = false;
-                            if (check != null)
-                            {
-                                checkValue = bool.Parse(check.Value);
-                            }
 
                             var idValue = Guid.Parse(id.Value);
                             var note = linker.Transcriptions.SelectMany(x => x.Notes).First(x => x.ID == idValue);
 
-                            var taskNote = new TaskNote(note, checkValue);
+                            var taskNote = new TaskNote(note);
 
                             linker.Tasks.Add(taskNote);
                         }
@@ -288,7 +281,6 @@ namespace JazzNotes.Helpers
             {
                 var ele = new XElement("task");
                 ele.SetAttributeValue("id", task.Note.ID.ToString());
-                ele.SetAttributeValue("check", task.Checked.ToString());
                 tasks.Add(ele);
             }
             root.Add(tasks);

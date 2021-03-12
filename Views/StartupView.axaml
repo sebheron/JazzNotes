@@ -43,10 +43,12 @@
                             <MenuItem Command="{Binding $parent[Window].DataContext.DeleteNote}" CommandParameter="{Binding}" Header="Delete Note" />
                           </ContextMenu>
                         </Button.ContextMenu>
-                        <Grid RowDefinitions="*, *" ColumnDefinitions="*, *">
-                          <TextBlock Text="{Binding Title}" TextWrapping="Wrap" />
-                          <TextBlock Foreground="#555" Margin="0 5 0 0" Grid.Row="1" Text="{Binding Transcription.Name}" TextWrapping="Wrap" />
-                          <ItemsControl Grid.RowSpan="2" Grid.Column="1" Items="{Binding Tags}" HorizontalAlignment="Right">
+                        <Grid ColumnDefinitions="*, *">
+                          <StackPanel>
+                            <TextBlock Text="{Binding Title}" TextWrapping="Wrap" />
+                            <TextBlock Foreground="#777" Margin="0 5 0 0" Text="{Binding Transcription.Name}" TextWrapping="Wrap" />
+                          </StackPanel>
+                          <ItemsControl Grid.Column="1" Items="{Binding Tags}" HorizontalAlignment="Right">
                             <ItemsControl.ItemTemplate>
                               <DataTemplate>
                                 <Border Margin="3" Padding="3" CornerRadius="3" Background="{Binding Color}">
@@ -124,10 +126,11 @@
                           <MenuItem Command="{Binding $parent[Window].DataContext.DeleteTask}" CommandParameter="{Binding}" Header="Remove Task" />
                         </ContextMenu>
                       </Button.ContextMenu>
-                      <Grid RowDefinitions="*, *, *, *" ColumnDefinitions="*, *">
+                      <Grid RowDefinitions="*, *, *, *">
                         <CheckBox Content="{Binding Note.Title}" IsChecked="{Binding Checked}" />
-                        <TextBlock Foreground="#888" Margin="0 5 0 0" Grid.Row="1" Text="{Binding Note.Text}" TextWrapping="Wrap" />
-                        <TextBlock Foreground="#555" Margin="0 5 0 0" Grid.Row="2" Text="{Binding Note.Transcription.Name}" TextWrapping="Wrap" />
+                        <Rectangle Fill="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                        <TextBlock Foreground="#999" Margin="0 5 0 0" Grid.Row="1" Text="{Binding Note.Text}" TextWrapping="Wrap" />
+                        <TextBlock Foreground="#777" Margin="0 5 0 0" Grid.Row="2" Text="{Binding Note.Transcription.Name}" TextWrapping="Wrap" />
                         <ItemsControl Items="{Binding Note.Tasks}" Grid.Row="3">
                           <ItemsControl.ItemTemplate>
                             <DataTemplate>

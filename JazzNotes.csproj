@@ -13,8 +13,8 @@
     <PackageReference Include="Avalonia.Desktop" Version="0.10.0" />
     <PackageReference Include="Avalonia.Diagnostics" Version="0.10.0" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.0" />
-    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="7.23.2" />
-    <PackageReference Include="MessageBox.Avalonia" Version="1.0.5" />
+    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="7.23.2.1" />
+    <PackageReference Include="MessageBox.Avalonia" Version="1.0.6" />
   </ItemGroup>
   <ItemGroup>
     <None Update="Ghostscript\gsdll64.dll">

@@ -8,12 +8,17 @@ namespace JazzNotes.Helpers
         /// <summary>
         /// Main JazzNotes directory.
         /// </summary>
-        public static readonly string DataFilePath = Path.Combine(JazzNotesDirectory, "Data.xml");
+        public static readonly string JazzNotesDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "JazzNotes");
 
         /// <summary>
-        /// Directory for GhostScript on Windows.
+        /// Directory for Transcriptions.
         /// </summary>
-        public static readonly string GhostscriptDirectoryWindows = Path.Combine(Directory.GetCurrentDirectory(), "Ghostscript");
+        public static readonly string TranscriptionsDirectory = Path.Combine(JazzNotesDirectory, "Transcriptions");
+
+        /// <summary>
+        /// Main JazzNotes directory.
+        /// </summary>
+        public static readonly string DataFilePath = Path.Combine(JazzNotesDirectory, "Data.xml");
 
         /// <summary>
         /// Directory for Images.
@@ -26,13 +31,8 @@ namespace JazzNotes.Helpers
         public static readonly string ImgPath = Path.Combine(JazzNotesDirectory, "temp{0}.png");
 
         /// <summary>
-        /// Main JazzNotes directory.
+        /// Directory for GhostScript on Windows.
         /// </summary>
-        public static readonly string JazzNotesDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "JazzNotes");
-
-        /// <summary>
-        /// Directory for Transcriptions.
-        /// </summary>
-        public static readonly string TranscriptionsDirectory = Path.Combine(JazzNotesDirectory, "Transcriptions");
+        public static readonly string GhostscriptDirectoryWindows = Path.Combine(Directory.GetCurrentDirectory(), "Ghostscript");
     }
 }

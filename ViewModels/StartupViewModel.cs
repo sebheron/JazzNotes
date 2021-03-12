@@ -100,27 +100,6 @@ namespace JazzNotes.ViewModels
         {
             get
             {
-                if (this.Tags.Count > 0)
-                {
-                    var tasks = new AvaloniaList<TaskNote>();
-                    var tagCount = 0;
-
-                    foreach (var task in this.linker.Tasks)
-                    {
-                        foreach (var tag in this.Tags)
-                        {
-                            if (!task.Note.Tags.Contains(tag)) continue;
-                            tagCount++;
-                        }
-                        if (tagCount == this.Tags.Count)
-                        {
-                            tasks.Add(task);
-                        }
-                        tagCount = 0;
-                    }
-                    return tasks;
-                }
-
                 return this.linker.Tasks;
             }
         }
@@ -188,6 +167,7 @@ namespace JazzNotes.ViewModels
             this.RaisePropertyChanged(nameof(this.NotesCount));
             this.RaisePropertyChanged(nameof(this.TranscriptionItems));
             this.RaisePropertyChanged(nameof(this.TranscriptionsCount));
+            this.RaisePropertyChanged(nameof(this.TaskItems));
             this.RaisePropertyChanged(nameof(this.AutoCompleteItems));
         }
 

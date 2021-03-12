@@ -1,4 +1,5 @@
 ﻿using JazzNotes.Helpers;
+using System.Linq;
 
 namespace JazzNotes.Models
 {
@@ -12,30 +13,12 @@ namespace JazzNotes.Models
         public TaskNote(Note note)
         {
             this.Note = note;
-            this.Checked = false;
-        }
-
-        /// <summary>
-        /// Creates a task note.
-        /// </summary>
-        public TaskNote(Note note, bool check)
-        {
-            this.Note = note;
-            this.Checked = check;
         }
 
         /// <summary>
         /// Whether the task note is checked or not.
         /// </summary>
-        public bool Checked
-        {
-            get => this.check;
-            set
-            {
-                this.check = value;
-                FileHelper.SaveLinker();
-            }
-        }
+        public bool Checked => this.Note.Tasks.All(x => x.Checked);
 
         /// <summary>
         /// The note.
