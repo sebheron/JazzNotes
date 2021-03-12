@@ -123,6 +123,8 @@
                             Margin="3" Padding="5" HorizontalAlignment="Stretch">
                       <Button.ContextMenu>
                         <ContextMenu>
+                          <MenuItem Command="{Binding $parent[Window].DataContext.BringTaskToFront}" CommandParameter="{Binding}" Header="Bring to front" />
+                          <MenuItem Command="{Binding $parent[Window].DataContext.SendTaskToBack}" CommandParameter="{Binding}" Header="Send to back" />
                           <MenuItem Command="{Binding $parent[Window].DataContext.DeleteTask}" CommandParameter="{Binding}" Header="Remove Task" />
                         </ContextMenu>
                       </Button.ContextMenu>

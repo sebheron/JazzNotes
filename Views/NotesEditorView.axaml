@@ -30,8 +30,8 @@
           <TabItem Header="View 🎵">
             <StackPanel HorizontalAlignment="Stretch">
               <TextBlock Margin="5" Text="{Binding Title}" FontSize="35" FontWeight="DemiBold" />
-              <TextBlock Margin="5 10 5 5" TextWrapping="Wrap" Text="{Binding Text}" />
-              <ItemsControl Margin="0 5 0 0" Items="{Binding Tasks}">
+              <TextBlock Margin="5 15 5 5" TextWrapping="Wrap" Text="{Binding Text}" />
+              <ItemsControl Margin="0 10 0 0" Items="{Binding Tasks}">
                 <ItemsControl.ItemTemplate>
                   <DataTemplate>
                     <CheckBox Margin="3" Content="{Binding Name}" IsChecked="{Binding Checked}"/>
@@ -43,7 +43,7 @@
                   </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
               </ItemsControl>
-              <ItemsControl Margin="0 5 0 0" Items="{Binding Images}">
+              <ItemsControl Margin="0 10 0 0" Items="{Binding Images}">
                 <ItemsControl.ItemTemplate>
                   <DataTemplate>
                     <Border DockPanel.Dock="Top" Margin="5" BorderBrush="Gray" BorderThickness="1" HorizontalAlignment="Stretch">
@@ -60,7 +60,7 @@
                   </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
               </ItemsControl>
-              <ItemsControl Margin="0 5 0 0" Items="{Binding Tags}">
+              <ItemsControl Margin="0 10 0 0" Items="{Binding Tags}">
                 <ItemsControl.ItemTemplate>
                   <DataTemplate>
                     <Border Margin="3" Padding="3" CornerRadius="3" Background="{Binding Color}">

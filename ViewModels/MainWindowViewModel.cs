@@ -138,6 +138,26 @@ namespace JazzNotes.ViewModels
         }
 
         /// <summary>
+        /// Brings a task to the front.
+        /// </summary>
+        /// <param name="task">The task to move.</param>
+        public void BringTaskToFront(TaskNote task)
+        {
+            this.Linker.Tasks.Remove(task);
+            this.Linker.Tasks.Insert(0, task);
+        }
+
+        /// <summary>
+        /// Sends a task to the back.
+        /// </summary>
+        /// <param name="task">The task to move.</param>
+        public void SendTaskToBack(TaskNote task)
+        {
+            this.Linker.Tasks.Remove(task);
+            this.Linker.Tasks.Add(task);
+        }
+
+        /// <summary>
         /// Deletes a transcription.
         /// </summary>
         /// <param name="transcription">The transcription to delete.</param>
