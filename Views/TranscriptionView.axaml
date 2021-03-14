@@ -19,7 +19,7 @@
         <StackPanel HorizontalAlignment="Right" Grid.Column="3" Orientation="Horizontal" Spacing="3">
           <ToggleSwitch OffContent="Show Notes 🎶" OnContent="Hide Notes 🎶" Name="ShowNotes" IsChecked="{Binding ShowNotes}" VerticalAlignment="Center" />
           <ComboBox SelectedIndex="{Binding ClickMode}">
-            <ComboBoxItem Content="View/Edit ✍️" />
+            <ComboBoxItem Content="View/Edit 📝" />
             <ComboBoxItem Content="Add ➕" />
           </ComboBox>
         </StackPanel>

@@ -2,6 +2,7 @@
 using Avalonia.Collections;
 using Avalonia.Media;
 using JazzNotes.Models;
+using MessageBox.Avalonia;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -194,6 +195,12 @@ namespace JazzNotes.Helpers
                         }
                     }
                 }
+            }
+            else
+            {
+                var messageBoxStandardWindow = MessageBoxManager
+                    .GetMessageBoxStandardWindow("JazzNotes", "Welcome to JazzNotes! Thanks for downloading.\nHelp can be found on the site! Be sure to share ideas with me.\nAnd I'll try my best to release updates ASAP.\n- Swegrock");
+                messageBoxStandardWindow.ShowDialog(WindowHelper.MainWindow);
             }
             Linker = linker;
             loading = false;

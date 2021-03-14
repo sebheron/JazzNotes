@@ -12,7 +12,7 @@
       </Grid>
     </Border>
     <ScrollViewer Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-      <pz:ZoomBorder Stretch="None" ZoomSpeed="1.05" PanButton="Left"
+      <pz:ZoomBorder Stretch="None" ZoomSpeed="1.02" PanButton="Left"
                      Background="Black" ClipToBounds="True" Focusable="True"
                      VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <Image Source="{Binding Image}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />

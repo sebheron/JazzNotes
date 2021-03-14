@@ -120,7 +120,7 @@
               </ItemsControl>
               <Button Command="{Binding $parent[UserControl].DataContext.AddImage}"
                       Background="DarkBlue" Margin="3" Content="Add Image" HorizontalAlignment="Stretch"/>
-              <TextBlock Margin="5" Text="Tags 🏷️" />
+              <TextBlock Margin="5" Text="Tags" />
               <ItemsControl Items="{Binding Tags}">
                 <ItemsControl.ItemTemplate>
                   <DataTemplate>
