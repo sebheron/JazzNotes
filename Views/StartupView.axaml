@@ -147,7 +147,7 @@
               </ItemsControl>
             </StackPanel>
           </ScrollViewer>
-          <Label Margin="3" Content="{Binding NotesCount}" Grid.Row="1" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" />
+          <Label Margin="3" Content="{Binding TasksCount}" Grid.Row="1" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" />
         </Grid>
       </TabItem>
     </TabControl>

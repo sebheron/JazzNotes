@@ -67,6 +67,11 @@ namespace JazzNotes.ViewModels
         public string NotesCount => $"Notes: {this.NoteItems.Count}";
 
         /// <summary>
+        /// The count for tasks.
+        /// </summary>
+        public string TasksCount => $"Tasks: {this.TaskItems.Count}";
+
+        /// <summary>
         /// The search query.
         /// </summary>
         public string Search
@@ -168,6 +173,7 @@ namespace JazzNotes.ViewModels
             this.RaisePropertyChanged(nameof(this.TranscriptionItems));
             this.RaisePropertyChanged(nameof(this.TranscriptionsCount));
             this.RaisePropertyChanged(nameof(this.TaskItems));
+            this.RaisePropertyChanged(nameof(this.TasksCount));
             this.RaisePropertyChanged(nameof(this.AutoCompleteItems));
         }
 
