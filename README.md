@@ -1,5 +1,5 @@
 # JazzNotes
-### [sebheron.github.io/jazznotes/](https://swegrock.github.io/jazznotes/)
+### [sebheron.github.io/jazznotes/](https://sebheron.github.io/jazznotes/)
 Transcribing and analysing music has never been easier...👌
 
 ## Summary
