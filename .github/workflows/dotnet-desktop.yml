@@ -4,9 +4,6 @@ on:
   release:
     types: [created]
 
-permissions:
-  contents: write
-
 jobs:
   build:
     runs-on: windows-latest
@@ -36,6 +33,7 @@ jobs:
         path: out
 
   release:
+    permissions: write-all
     runs-on: windows-latest
     needs: build
     if: github.event_name == 'release'
