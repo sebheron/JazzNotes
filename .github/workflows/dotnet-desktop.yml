@@ -4,6 +4,9 @@ on:
   release:
     types: [created]
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: windows-latest
@@ -33,7 +36,6 @@ jobs:
         path: out
 
   release:
-    permissions: write-all
     runs-on: windows-latest
     needs: build
     if: github.event_name == 'release'
@@ -48,23 +50,6 @@ jobs:
         name: app
         path: out
 
-    - name: Delete existing release
-      id: delete_release
-      run: |
-        gh release delete ${{ github.event.release.tag_name }} --yes || true
-        gh release create ${{ github.event.release.tag_name }}
-
-    - name: Create GitHub Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.event.release.tag_name }}
-        release_name: Release ${{ github.event.release.tag_name }}
-        draft: false
-        prerelease: false
-
     - name: Compress Build Artifacts
       run: Compress-Archive -Path ./out/* -DestinationPath ./out/JazzNotes.zip
 
@@ -73,7 +58,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        upload_url: ${{ github.event.release.upload_url }}
         asset_path: ./out/JazzNotes.zip
         asset_name: JazzNotes.zip
         asset_content_type: application/zip
