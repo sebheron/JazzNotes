@@ -14,10 +14,10 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v2
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '5.0.x'
 
@@ -31,7 +31,7 @@ jobs:
       run: dotnet publish -c Release -o out --no-restore
 
     - name: Upload Build Artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: app
         path: out
