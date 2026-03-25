@@ -140,7 +140,7 @@ namespace JazzNotes.Helpers
                 using var image = new MagickImage();
 
                 image.Read(path);
-                image.Crop(new MagickGeometry((int)snip.Rect.Left, (int)snip.Rect.Top, (int)snip.Rect.Width, (int)snip.Rect.Height), Gravity.Northwest);
+                image.Crop(new MagickGeometry((int)snip.Rect.Left, (int)snip.Rect.Top, (uint)snip.Rect.Width, (uint)snip.Rect.Height), Gravity.Northwest);
 
                 newPath = string.Format(PathHelper.ImgPath, imgPaths.Count + 1);
                 imgPaths.Add(newPath);

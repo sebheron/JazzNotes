@@ -196,12 +196,6 @@ namespace JazzNotes.Helpers
                     }
                 }
             }
-            else
-            {
-                var messageBoxStandardWindow = MessageBoxManager
-                    .GetMessageBoxStandardWindow("JazzNotes", "Welcome to JazzNotes! Thanks for downloading.\nHelp can be found on the site! Be sure to share ideas with me.\nAnd I'll try my best to release updates ASAP.\n- Swegrock");
-                messageBoxStandardWindow.ShowDialog(WindowHelper.MainWindow);
-            }
             Linker = linker;
             loading = false;
             return linker;

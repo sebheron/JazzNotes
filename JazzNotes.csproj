@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ApplicationIcon>jazznotes-icon.ico</ApplicationIcon>
   </PropertyGroup>
@@ -14,7 +14,7 @@
     <PackageReference Include="Avalonia.Desktop" Version="0.10.0" />
     <PackageReference Include="Avalonia.Diagnostics" Version="0.10.0" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.0" />
-    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="7.23.2.1" />
+    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="14.11.0" />
     <PackageReference Include="MessageBox.Avalonia" Version="1.0.6" />
   </ItemGroup>
   <ItemGroup>
